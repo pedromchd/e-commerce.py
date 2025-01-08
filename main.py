@@ -386,13 +386,13 @@ def cadastrar_peca(estoque):
 
 # função pra gerar a lista de estoque
 def gerar_lista(estoque):
-    if not os.path.exists(
-        "generated_list"
-    ):  # verifica se a pasta generated_list existe
-        os.makedirs("generated_list")  # cria a pasta generated_list se nao existir
+    # cria a pasta reports se nao existir
+    os.makedirs(os.path.join(os.getcwd(), "reports"), exist_ok=True)
+
+    file_path = os.path.join(os.getcwd(), "reports", "estoque_report.csv")
 
     with open(
-        "generated_list/lista_estoque.csv",
+        file_path,
         mode="w",
         newline="",
         encoding="utf-8",  # abre o arquivo csv pra escrever
@@ -405,7 +405,7 @@ def gerar_lista(estoque):
         writer.writerows(estoque)  # escreve as linhas do estoque
 
     print(
-        "Lista de estoque gerada em 'generated_list/lista_estoque.csv'!"
+        f"Lista de estoque gerada em {file_path}!"
     )  # imprime a mensagem de que a lista foi gerada
     interface_principal()
 
