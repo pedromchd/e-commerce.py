@@ -1,10 +1,7 @@
-import sys
-
-# adiciona a pasta 'lib' ao PATH do python, eh importante pra achar as libs
-sys.path.append("./lib")
-from graphics import *
 import csv
 import os
+
+from lib.graphics import *
 
 # nome do arquivo csv que guarda o estoque, eh onde a gente salva tudo
 CSV_FILE = "estoque_ecommerce.csv"
