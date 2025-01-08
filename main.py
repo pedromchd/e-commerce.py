@@ -4,7 +4,7 @@ import os
 from lib.graphics import *
 
 # nome do arquivo csv que guarda o estoque, eh onde a gente salva tudo
-CSV_FILE = "estoque_ecommerce.csv"
+CSV_FILE = os.path.join(os.getcwd(), "data", "estoque.csv")
 
 
 # função pra carregar o estoque do arquivo csv
