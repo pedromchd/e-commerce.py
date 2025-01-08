@@ -3,5 +3,8 @@
   "files.insertFinalNewline": true,
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
-  }
+  },
+  "python.analysis.extraPaths": [
+    "./lib"
+  ]
 }
