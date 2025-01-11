@@ -1,5 +1,3 @@
-# e-commerce.py
-
 # Sistema de Gestão de Estoque para E-commerce
 
 Este sistema foi desenvolvido para gerenciar o estoque de uma loja de e-commerce. Ele utiliza um arquivo CSV para armazenar os dados de estoque e fornece funcionalidades essenciais para manter o controle dos produtos.
@@ -20,4 +18,3 @@ Este sistema foi desenvolvido para gerenciar o estoque de uma loja de e-commerce
 
 5. **Redução do Estoque em Caso de Compra**  
    Quando uma compra é registrada, o sistema reduz automaticamente a quantidade do produto no estoque. Caso a quantidade disponível seja insuficiente, o sistema exibirá uma mensagem de alerta.
-
