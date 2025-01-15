@@ -16,8 +16,9 @@ class Estoque:
 
     def salvar_produtos(self):
         with open(self.csv_file, "w", encoding="utf-8", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerows(self.produtos)
+            writer = csv.DictWriter(file, fieldnames=self.fields)
+            writer.writeheader()
+            writer.writerows(self.produtos.values())
 
     def adicionar_produto(self, produto: list):
         self.produtos.append(produto)
