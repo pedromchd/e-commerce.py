@@ -20,14 +20,35 @@ class Estoque:
             writer.writeheader()
             writer.writerows(self.produtos.values())
 
-    def adicionar_produto(self, produto: list):
-        self.produtos.append(produto)
+    def adicionar_produto(self, produto: dict):
+        id_produto = produto["ID"]
+        if id_produto in self.produtos:
+            raise ValueError("Produto já cadastrado")
+        self.produtos[id_produto] = produto
         self.salvar_produtos()
 
-    def remover_produto(self, id_produto: int):
-        for produto in self.produtos:
-            if int(produto[0]) == id_produto:
-                self.produtos.remove(produto)
-                self.salvar_produtos()
-                return True
-        return False
+    def remover_produto(self, id_produto: str):
+        if id_produto not in self.produtos:
+            raise ValueError("Produto não encontrado")
+        del self.produtos[id_produto]
+        self.salvar_produtos()
+
+    def atualizar_produto(self, id_produto: str, produto: dict):
+        if id_produto not in self.produtos:
+            raise ValueError("Produto não encontrado")
+        self.produtos[id_produto] = produto
+        self.salvar_produtos()
+
+    def listar_produtos(
+        self, nome_produto: str = None, pagina: int = 1, tamanho_pagina: int = 10
+    ):
+        produtos = list(self.produtos.values())
+        if nome_produto:
+            produtos = [
+                produto
+                for produto in produtos
+                if nome_produto.lower() in produto["Nome"].lower()
+            ]
+        inicio = (pagina - 1) * tamanho_pagina
+        fim = inicio + tamanho_pagina
+        return produtos[inicio:fim]
