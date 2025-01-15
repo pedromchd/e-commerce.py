@@ -4,14 +4,14 @@ import csv
 class Estoque:
     def __init__(self, csv_file: str):
         self._csv_file = csv_file
-        self._fields = []
+        self._fields = tuple()
         self._produtos = dict()
         self._carregar_produtos()
 
     def _carregar_produtos(self):
         with open(self._csv_file, "r", encoding="utf-8", newline="") as file:
             reader = csv.DictReader(file)
-            self._fields = reader.fieldnames
+            self._fields = tuple(reader.fieldnames)
             self._produtos = {row["ID"]: row for row in reader}
 
     def _salvar_produtos(self):
