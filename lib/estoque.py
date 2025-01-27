@@ -50,9 +50,10 @@ class Estoque:
 
     def remover_produto(self, id_produto: str):
         if id_produto not in self._produtos:
-            raise ValueError("Produto não encontrado")
+            return False, "Produto não encontrado"
         del self._produtos[id_produto]
         self._salvar_produtos()
+        return True, "Produto removido com sucesso"
 
     def atualizar_produto(self, id_produto: str, produto: dict):
         if id_produto not in self._produtos:
