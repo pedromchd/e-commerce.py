@@ -40,12 +40,24 @@ def interface_principal():
     )  # cria a janela principal
     win.setCoords(0, 0, 50, 50)  # define as coordenadas da janela
 
+    # Centraliza a janela no meio do monitor
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x = (screen_width // 2) - (600 // 2)
+    y = (screen_height // 2) - (600 // 2)
+    win.master.geometry(f"+{x}+{y}")
+
     # logo do e-commerce, eh pra ficar bonitinho
     logo = Text(Point(25, 45), "🏢 Auto & Sport")
     logo.setSize(24)  # tamanho da fonte'
     logo.setStyle("bold")
     logo.setTextColor("#1E90FF")  # azul dodger
     logo.draw(win)  # desenha o logo na tela
+    # Adiciona uma imagem
+    image_path = os.path.join(os.getcwd(), "images", "logo.png")
+    if os.path.exists(image_path):
+        logo_image = Image(Point(25, 35), image_path)
+        logo_image.draw(win)
 
     # botões principais, eh onde a mágica acontece
     buttons = {
@@ -128,6 +140,23 @@ def interface_principal():
 def verificar_estoque(estoque):
     win = GraphWin("Verificar Estoque", 600, 600)
     win.setCoords(0, 0, 50, 50)
+
+    # Centraliza a janela no meio do monitor
+    screen_width = (
+        win.winfo_screenwidth()
+    )  # peguei a largura da tela do monitor do usuário pra centralizar a janela
+    screen_height = (
+        win.winfo_screenheight()
+    )  # peguei a altura da tela do monitor do usuário pra centralizar a janela
+    x = (screen_width // 2) - (
+        600 // 2
+    )  # calcula a posição x da janela pra centralizar
+    y = (screen_height // 2) - (
+        600 // 2
+    )  # calcula a posição y da janela pra centralizar
+    win.master.geometry(
+        f"+{x}+{y}"
+    )  # centraliza a janela no meio do monitor e esse geome
 
     # título da janela
     titulo = Text(Point(25, 48), "Estoque Atual")  # título da janela
@@ -296,6 +325,13 @@ def cadastrar_peca(estoque):
     win = GraphWin("Cadastrar Peça", 600, 600)
     win.setCoords(0, 0, 50, 50)
 
+    # Centraliza a janela no meio do monitor
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x = (screen_width // 2) - (600 // 2)
+    y = (screen_height // 2) - (600 // 2)
+    win.master.geometry(f"+{x}+{y}")
+
     # título da janela
     titulo = Text(Point(25, 48), "Cadastrar Nova Peça")
     titulo.setSize(16)
@@ -414,6 +450,13 @@ def gerar_lista(estoque):
 def realizar_compra(estoque):
     win = GraphWin("Realizar Compra", 800, 600)  # cria a janela de realizar compra
     win.setCoords(0, 0, 80, 60)  # define as coordenadas da janela
+
+    # Centraliza a janela no meio do monitor
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x = (screen_width // 2) - (600 // 2)
+    y = (screen_height // 2) - (600 // 2)
+    win.master.geometry(f"+{x}+{y}")
 
     # título da janela
     titulo = Text(Point(40, 58), "Realizar Compra")
