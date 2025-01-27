@@ -38,12 +38,15 @@ class Estoque:
                 return id
 
     def adicionar_produto(self, produto: dict):
+        if not all(key in produto for key in self._fields):
+            return False, "Campos inválidos"
         if produto["Nome"].lower() in self._produtos_por_nome:
             return False, "Produto já cadastrado com esse nome"
         id_produto = self._generate_id()
         produto["ID"] = id_produto
         self._produtos[id_produto] = produto
         self._salvar_produtos()
+        return True, "Produto adicionado com sucesso"
 
     def remover_produto(self, id_produto: str):
         if id_produto not in self._produtos:
