@@ -7,6 +7,7 @@ class Estoque:
         self._csv_file = csv_file
         self._fields = tuple()
         self._produtos = dict()
+        self._produtos_por_nome = dict()
         self._carregar_produtos()
 
     def _carregar_produtos(self):
@@ -14,12 +15,20 @@ class Estoque:
             reader = csv.DictReader(file)
             self._fields = tuple(reader.fieldnames)
             self._produtos = {row["ID"]: row for row in reader}
+        self._salvar_produtos_por_nome()
 
     def _salvar_produtos(self):
+        self._salvar_produtos_por_nome()
         with open(self._csv_file, "w", encoding="utf-8", newline="") as file:
             writer = csv.DictWriter(file, fieldnames=self._fields)
             writer.writeheader()
             writer.writerows(self._produtos.values())
+
+    def _salvar_produtos_por_nome(self):
+        self._produtos_por_nome = {
+            produto["Nome"].lower(): produto["ID"]
+            for produto in self._produtos.values()
+        }
 
     def _generate_id(self):
         while True:
