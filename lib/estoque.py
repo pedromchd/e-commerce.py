@@ -1,36 +1,6 @@
 import csv
 
 
-class Produto:
-    def __init__(
-        self, id: str, nome: str, categoria: str, quantidade: int, preco: float
-    ):
-        self.id = id
-        self.nome = nome
-        self.categoria = categoria
-        self.quantidade = quantidade
-        self.preco = preco
-
-    def to_dict(self):
-        return {
-            "ID": self.id,
-            "Nome": self.nome,
-            "Categoria": self.categoria,
-            "Quantidade": self.quantidade,
-            "Preco": self.preco,
-        }
-
-    @staticmethod
-    def from_dict(data: dict):
-        return Produto(
-            data["ID"],
-            data["Nome"],
-            data["Categoria"],
-            data["Quantidade"],
-            data["Preco"],
-        )
-
-
 class Estoque:
     def __init__(self, csv_file: str):
         self._csv_file = csv_file
