@@ -1,4 +1,5 @@
 import csv
+import random
 
 
 class Estoque:
@@ -19,6 +20,13 @@ class Estoque:
             writer = csv.DictWriter(file, fieldnames=self._fields)
             writer.writeheader()
             writer.writerows(self._produtos.values())
+
+    def _generate_id(self):
+        while True:
+            id = random.randint(1, 99999)
+            id = f"{id:05}"
+            if id not in self._produtos:
+                return id
 
     def adicionar_produto(self, produto: dict):
         id_produto = produto["ID"]
