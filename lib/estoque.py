@@ -38,9 +38,10 @@ class Estoque:
                 return id
 
     def adicionar_produto(self, produto: dict):
-        id_produto = produto["ID"]
-        if id_produto in self._produtos:
-            raise ValueError("Produto já cadastrado")
+        if produto["Nome"].lower() in self._produtos_por_nome:
+            return False, "Produto já cadastrado com esse nome"
+        id_produto = self._generate_id()
+        produto["ID"] = id_produto
         self._produtos[id_produto] = produto
         self._salvar_produtos()
 
