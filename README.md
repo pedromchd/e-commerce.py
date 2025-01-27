@@ -18,9 +18,3 @@ Este sistema foi desenvolvido para gerenciar o estoque de uma loja de e-commerce
 
 5. **Redução do Estoque em Caso de Compra**  
    Quando uma compra é registrada, o sistema reduz automaticamente a quantidade do produto no estoque. Caso a quantidade disponível seja insuficiente, o sistema exibirá uma mensagem de alerta.
-
-## TODO
-
-- [ ] Adicionar um mesmo produto e somar no produto já integrado no sistema.
-- [ ] Produto com preço diferente é um produto diferente, apesar de estar com o mesmo nome.
-- [ ] Adicionar ID de forma automática diretamente pelo sistema.
