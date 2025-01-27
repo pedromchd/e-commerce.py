@@ -17,7 +17,7 @@ class Produto:
             "Nome": self.nome,
             "Categoria": self.categoria,
             "Quantidade": self.quantidade,
-            "Preço": self.preco,
+            "Preco": self.preco,
         }
 
     @staticmethod
@@ -27,7 +27,7 @@ class Produto:
             data["Nome"],
             data["Categoria"],
             data["Quantidade"],
-            data["Preço"],
+            data["Preco"],
         )
 
 
