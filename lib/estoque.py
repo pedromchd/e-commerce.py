@@ -56,10 +56,19 @@ class Estoque:
         return True, "Produto removido com sucesso"
 
     def atualizar_produto(self, id_produto: str, produto: dict):
+        if not all(key in produto for key in self._fields):
+            return False, "Campos inválidos"
         if id_produto not in self._produtos:
-            raise ValueError("Produto não encontrado")
+            return False, "Produto não encontrado"
+        nome_produto = produto["Nome"].lower()
+        if (
+            nome_produto in self._produtos_por_nome
+            and self._produtos_por_nome[nome_produto] != id_produto
+        ):
+            return False, "Outro produto já cadastrado com esse nome"
         self._produtos[id_produto] = produto
         self._salvar_produtos()
+        return True, "Produto atualizado com sucesso"
 
     def listar_produtos(
         self, nome_produto: str = None, pagina: int = 1, tamanho_pagina: int = 10
