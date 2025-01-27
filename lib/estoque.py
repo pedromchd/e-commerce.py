@@ -16,18 +16,15 @@ class Estoque:
         with open(self._csv_file, "r", encoding="utf-8", newline="") as file:
             reader = csv.DictReader(file)  # Lê o CSV como um dicionário
             self._fields = tuple(reader.fieldnames)  # Armazena os nomes das colunas
-            self._produtos = {
-                row["ID"]: row for row in reader
-            }  # Mapeia produtos por ID
+            # Mapeia produtos por ID
+            self._produtos = {row["ID"]: row for row in reader}
         self._salvar_produtos_por_nome()  # Atualiza o dicionário de produtos por nome
 
     def _salvar_produtos(self):
         # Salva os produtos no arquivo CSV
         self._salvar_produtos_por_nome()  # Atualiza o dicionário de produtos por nome
         with open(self._csv_file, "w", encoding="utf-8", newline="") as file:
-            writer = csv.DictWriter(
-                file, fieldnames=self._fields
-            )  # Prepara o escritor CSV
+            writer = csv.DictWriter(file, fieldnames=self._fields)
             writer.writeheader()  # Escreve o cabeçalho no arquivo
             writer.writerows(self._produtos.values())  # Escreve os produtos no arquivo
 
@@ -48,13 +45,12 @@ class Estoque:
 
     def adicionar_produto(self, produto: dict):
         # Adiciona um novo produto ao estoque
-        if not all(
-            key in produto for key in self._fields
-        ):  # Verifica se todos os campos estão presentes
+        # Verifica se todos os campos (exceto "ID") estão presentes
+        campos_obrigatorios = [campo for campo in self._fields if campo != "ID"]
+        if not all(key in produto for key in campos_obrigatorios):
             return False, "Campos inválidos"
-        if (
-            produto["Nome"].lower() in self._produtos_por_nome
-        ):  # Verifica se o nome já existe
+        # Verifica se o nome já existe
+        if produto["Nome"].lower() in self._produtos_por_nome:
             return False, "Produto já cadastrado com esse nome"
         id_produto = self._generate_id()  # Gera um ID único
         produto["ID"] = id_produto  # Adiciona o ID ao produto
@@ -72,9 +68,8 @@ class Estoque:
 
     def atualizar_produto(self, id_produto: str, produto: dict):
         # Atualiza um produto existente no estoque
-        if not all(
-            key in produto for key in self._fields
-        ):  # Verifica se todos os campos estão presentes
+        # Verifica se todos os campos estão presentes
+        if not all(key in produto for key in self._fields):
             return False, "Campos inválidos"
         if id_produto not in self._produtos:  # Verifica se o produto existe
             return False, "Produto não encontrado"
