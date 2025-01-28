@@ -1,4 +1,5 @@
 import csv
+import random
 
 
 class Estoque:
@@ -6,6 +7,13 @@ class Estoque:
         self.csv_file = csv_file
         self.fields = ["ID", "Nome", "Categoria", "Quantidade", "Preco"]
         self.produtos = self.carregar_produtos()
+
+    def gerar_id(self):
+        while True:
+            id_produto = random.randint(1, 99999)
+            id_produto = f"{id_produto:05}"
+            if id_produto not in self.produtos:
+                return id_produto
 
     def carregar_produtos(self):
         with open(self.csv_file, "r") as f:
@@ -24,6 +32,7 @@ class Estoque:
             writer.writerows(self.produtos.values())
 
     def adicionar_produto(self, produto):
+        produto["ID"] = self.gerar_id()
         self.produtos[produto["ID"]] = produto
         self.salvar_produtos()
 
