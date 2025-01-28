@@ -1,6 +1,9 @@
 {
   "editor.formatOnSave": true,
   "files.insertFinalNewline": true,
+  "workbench.editorAssociations": {
+    "*.csv": "default"
+  },
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
   },
