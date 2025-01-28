@@ -10,7 +10,12 @@ class Estoque:
     def carregar_produtos(self):
         with open(self.csv_file, "r") as f:
             reader = csv.DictReader(f)
-            return {row["ID"]: row for row in reader}
+            produtos = {}
+            for row in reader:
+                row["Quantidade"] = int(row["Quantidade"])
+                row["Preco"] = float(row["Preco"])
+                produtos[row["ID"]] = row
+            return produtos
 
     def salvar_produtos(self):
         with open(self.csv_file, "w") as f:
@@ -45,6 +50,6 @@ class Estoque:
     def comprar_produto(self, id_produto, quantidade):
         if id_produto in self.produtos:
             self.produtos[id_produto]["Quantidade"] = (
-                int(self.produtos[id_produto]["Quantidade"]) - quantidade
+                self.produtos[id_produto]["Quantidade"] - quantidade
             )
             self.salvar_produtos()
