@@ -49,7 +49,7 @@ def interface_principal():
     win.master.geometry(f"+{x}+{y}")
 
     # Caminho da imagem corrigido para garantir o diretório correto
-    logo_path = os.path.join(os.path.dirname(__file__), "images", "roxo5.png")
+    logo_path = os.path.join(os.path.dirname(__file__), "img", "roxo5.png")
     if not os.path.exists(logo_path):
         raise FileNotFoundError(f"Imagem não encontrada no caminho: {logo_path}")
 
@@ -71,7 +71,7 @@ def interface_principal():
     logo.setTextColor("#df0c40")  #
     logo.draw(win)  # desenha o logo na tela
     # Adiciona uma imagem
-    image_path = os.path.join(os.getcwd(), "images", "logo.png")
+    image_path = os.path.join(os.getcwd(), "img", "logo.png")
     if os.path.exists(image_path):
         logo_image = Image(Point(25, 35), image_path)
         logo_image.draw(win)
