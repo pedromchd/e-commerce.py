@@ -1,5 +1,6 @@
 import csv
 import random
+import re
 
 
 class Estoque:
@@ -43,12 +44,27 @@ class Estoque:
             if id not in self._produtos:  # Verifica se o ID já existe
                 return id
 
+    def validate_fields(self, produto: dict, fields: tuple):
+        # Valida os campos do produto
+        # Remove espaços em branco dos valores
+        produto = {key: str(value).strip() for key, value in produto.items()}
+        # Verifica se todos os campos obrigatórios estão presentes
+        if not all(key in produto for key in fields):
+            return False, "Campos inválidos"
+        # Valida os campos "Quantidade" e "Preço"
+        if not produto["Quantidade"].isdigit():
+            return False, "Quantidade inválida"
+        if not re.match(r"^\d+\,\d{2}$", produto["Preco"]):
+            return False, "Preço inválido"
+        return True, ""
+
     def adicionar_produto(self, produto: dict):
         # Adiciona um novo produto ao estoque
-        # Verifica se todos os campos (exceto "ID") estão presentes
-        campos_obrigatorios = [campo for campo in self._fields if campo != "ID"]
-        if not all(key in produto for key in campos_obrigatorios):
-            return False, "Campos inválidos"
+        # Verifica se todos os campos estão presentes e são válidos
+        campos = [campo for campo in self._fields if campo != "ID"]
+        valid, msg = self.validate_fields(produto, campos)
+        if not valid:
+            return False, msg
         # Verifica se o nome já existe
         if produto["Nome"].lower() in self._produtos_por_nome:
             return False, "Produto já cadastrado com esse nome"
@@ -68,9 +84,10 @@ class Estoque:
 
     def atualizar_produto(self, id_produto: str, produto: dict):
         # Atualiza um produto existente no estoque
-        # Verifica se todos os campos estão presentes
-        if not all(key in produto for key in self._fields):
-            return False, "Campos inválidos"
+        # Verifica se todos os campos estão presentes e são válidos
+        valid, msg = self.validate_fields(produto, self._fields)
+        if not valid:
+            return False, msg
         if id_produto not in self._produtos:  # Verifica se o produto existe
             return False, "Produto não encontrado"
         nome_produto = produto["Nome"].lower()
