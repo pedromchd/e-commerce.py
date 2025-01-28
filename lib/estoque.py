@@ -114,3 +114,16 @@ class Estoque:
         inicio = (pagina - 1) * tamanho_pagina  # Calcula o índice inicial da página
         fim = inicio + tamanho_pagina  # Calcula o índice final da página
         return produtos[inicio:fim]  # Retorna os produtos da página solicitada
+
+    def comprar_produto(self, id_produto: str, quantidade: int):
+        # Simula a compra de um produto
+        if id_produto not in self._produtos:  # Verifica se o produto existe
+            return False, "Produto não encontrado"
+        produto = self._produtos[id_produto]  # Obtém o produto
+        quantidade_atual = int(produto["Quantidade"])  # Obtém a quantidade atual
+        if quantidade > quantidade_atual or quantidade <= 0:  # Verifica a quantidade
+            return False, "Quantidade insuficiente"
+        quantidade_atual -= quantidade  # Atualiza a quantidade
+        produto["Quantidade"] = str(quantidade_atual)  # Atualiza o produto
+        self._salvar_produtos()  # Salva os produtos no arquivo CSV
+        return True, "Compra realizada com sucesso"
