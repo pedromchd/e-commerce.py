@@ -57,8 +57,7 @@ class Estoque:
         return produtos_filtrados[inicio:fim]
 
     def comprar_produto(self, id_produto, quantidade):
-        if id_produto in self.produtos:
-            self.produtos[id_produto]["Quantidade"] = (
-                self.produtos[id_produto]["Quantidade"] - quantidade
-            )
+        quantidade_atual = self.produtos[id_produto]["Quantidade"]
+        if quantidade_atual >= quantidade:
+            self.produtos[id_produto]["Quantidade"] -= quantidade
             self.salvar_produtos()
