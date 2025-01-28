@@ -48,6 +48,9 @@ class Estoque:
 
     def atualizar_produto(self, id_produto, produto):
         if id_produto in self.produtos:
+            if self.produtos[id_produto]["Nome"].lower() != produto["Nome"].lower():
+                if produto["Nome"].lower() in self.nome_produtos:
+                    return False, "Nome do produto já cadastrado"
             self.produtos[id_produto].update(produto)
             self.salvar_produtos()
 
