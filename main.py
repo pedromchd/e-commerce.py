@@ -1,36 +1,12 @@
 import csv
 import os
 import webbrowser
+
+from lib.estoque import Estoque
 from lib.graphics import *
 
 # nome do arquivo csv que guarda o estoque, eh onde a gente salva tudo
 CSV_FILE = os.path.join(os.getcwd(), "data", "estoque.csv")
-
-
-# função pra carregar o estoque do arquivo csv
-def carregar_estoque():
-    if not os.path.exists(CSV_FILE):
-        return []
-    with open(CSV_FILE, mode="r", newline="", encoding="utf-8") as file:
-        reader = csv.DictReader(file)  # lê o arquivo csv
-        return list(reader)
-
-
-# função pra salvar o estoque no arquivo csv
-def salvar_estoque(estoque):
-    with open(
-        CSV_FILE, mode="w", newline="", encoding="utf-8"
-    ) as file:  # abre o arquivo csv
-        fieldnames = [
-            "ID",
-            "Nome",
-            "Categoria",
-            "Quantidade",
-            "Preco",
-        ]  # cabeçalhos do arquivo csv
-        writer = csv.DictWriter(file, fieldnames=fieldnames)  # escreve no arquivo csv
-        writer.writeheader()  # escreve os cabeçalhos
-        writer.writerows(estoque)  # escreve as linhas do estoque
 
 
 # função principal da interface gráfica
@@ -107,7 +83,7 @@ def interface_principal():
         button_text.draw(win)  # desenha o texto do botão
 
     # carrega o estoque do arquivo csv
-    estoque = carregar_estoque()  # carrega o estoque do arquivo csv
+    estoque = Estoque(CSV_FILE)  # carrega o estoque do arquivo csv
 
     # loop principal pra detectar cliques nos botões
     while True:
@@ -154,7 +130,7 @@ def interface_principal():
 
 
 # função pra verificar o estoque
-def verificar_estoque(estoque):
+def verificar_estoque(estoque: Estoque):
     win = GraphWin("Verificar Estoque", 600, 600)
     win.setCoords(0, 0, 50, 50)
 
@@ -207,12 +183,13 @@ def verificar_estoque(estoque):
         header_text.draw(win)
 
     # função pra mostrar o estoque na tela
-    def mostrar_estoque(filtrado_estoque, offset=0):
+    def mostrar_estoque(estoque: Estoque, offset=1):
+        filtrado_estoque = estoque.buscar_produtos(pagina=offset)
         win.setBackground("#c29efb")
         for item in win.items[:]:
             if isinstance(item, Text) and item.getText() not in headers:
                 item.undraw()
-        for i, produto in enumerate(filtrado_estoque[offset : offset + 10]):
+        for i, produto in enumerate(filtrado_estoque):
             y_pos = 38 - i * 2
             if y_pos < 0:
                 break
@@ -283,12 +260,12 @@ def verificar_estoque(estoque):
             pesquisa_entry.setText("")
             mostrar_estoque(estoque)
         elif 35 <= click.getX() <= 40 and 2 <= click.getY() <= 4:
-            if offset > 0:
-                offset -= 10
+            if offset > 1:
+                offset -= 1
                 mostrar_estoque(estoque, offset)
         elif 45 <= click.getX() <= 50 and 2 <= click.getY() <= 4:
-            if offset + 10 < len(estoque):
-                offset += 10
+            if offset * 10 < len(estoque.produtos):
+                offset += 1
                 mostrar_estoque(estoque, offset)
 
 
