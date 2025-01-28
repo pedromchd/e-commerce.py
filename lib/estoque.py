@@ -7,6 +7,7 @@ class Estoque:
         self.csv_file = csv_file
         self.fields = ["ID", "Nome", "Categoria", "Quantidade", "Preco"]
         self.produtos = self.carregar_produtos()
+        self.nome_produtos = []
 
     def gerar_id(self):
         while True:
@@ -24,8 +25,10 @@ class Estoque:
                 row["Preco"] = float(row["Preco"])
                 produtos[row["ID"]] = row
             return produtos
+        self.nome_produtos = [p["Nome"].lower() for p in self.produtos.values()]
 
     def salvar_produtos(self):
+        self.nome_produtos = [p["Nome"].lower() for p in self.produtos.values()]
         with open(self.csv_file, "w") as f:
             writer = csv.DictWriter(f, fieldnames=self.fields)
             writer.writeheader()
@@ -33,6 +36,8 @@ class Estoque:
 
     def adicionar_produto(self, produto):
         produto["ID"] = self.gerar_id()
+        if produto["Nome"].lower() in self.nome_produtos:
+            return False, "Produto já cadastrado"
         self.produtos[produto["ID"]] = produto
         self.salvar_produtos()
 
