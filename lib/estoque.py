@@ -6,8 +6,8 @@ class Estoque:
     def __init__(self, csv_file):
         self.csv_file = csv_file
         self.fields = ["ID", "Nome", "Categoria", "Quantidade", "Preco"]
-        self.produtos = self.carregar_produtos()
         self.nome_produtos = []
+        self.produtos = self.carregar_produtos()
 
     def gerar_id(self):
         while True:
@@ -21,11 +21,11 @@ class Estoque:
             reader = csv.DictReader(f)
             produtos = {}
             for row in reader:
+                self.nome_produtos.append(row["Nome"].lower())
                 row["Quantidade"] = int(row["Quantidade"])
                 row["Preco"] = float(row["Preco"])
                 produtos[row["ID"]] = row
             return produtos
-        self.nome_produtos = [p["Nome"].lower() for p in self.produtos.values()]
 
     def salvar_produtos(self):
         self.nome_produtos = [p["Nome"].lower() for p in self.produtos.values()]
