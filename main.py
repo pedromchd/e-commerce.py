@@ -270,7 +270,7 @@ def verificar_estoque(estoque: Estoque):
 
 
 # função pra cadastrar uma nova peça
-def cadastrar_peca(estoque):
+def cadastrar_peca(estoque: Estoque):
     win = GraphWin("Cadastrar Peça", 600, 600)
     win.setCoords(0, 0, 50, 50)
     win.setBackground("#c29efb")
@@ -286,12 +286,6 @@ def cadastrar_peca(estoque):
     titulo.setSize(16)
     titulo.setStyle("bold")
     titulo.draw(win)
-
-    # campos de entrada
-    id_label = Text(Point(10, 40), "ID:")
-    id_label.draw(win)
-    id_entry = Entry(Point(25, 40), 20)
-    id_entry.draw(win)
 
     nome_label = Text(
         Point(10, 36), "Nome:"
@@ -337,25 +331,21 @@ def cadastrar_peca(estoque):
         if (
             15 <= click.getX() <= 35 and 18 <= click.getY() <= 20
         ):  # verifica se o clique foi no botão de cadastrar
-            id = id_entry.getText()
             nome = nome_entry.getText()
             categoria = categoria_entry.getText()
             quantidade = quantidade_entry.getText()
             preco = preco_entry.getText()
 
             if (
-                id and nome and categoria and quantidade and preco
+                nome and categoria and quantidade and preco
             ):  # verifica se todos os campos foram preenchidos
-                estoque.append(
-                    {
-                        "ID": id,
-                        "Nome": nome,
-                        "Categoria": categoria,
-                        "Quantidade": quantidade,
-                        "Preco": preco,
-                    }
-                )
-                salvar_estoque(estoque)
+                produto = {
+                    "Nome": nome,
+                    "Categoria": categoria,
+                    "Quantidade": quantidade,
+                    "Preco": preco,
+                }
+                estoque.adicionar_produto(produto)
                 break
 
         if (
