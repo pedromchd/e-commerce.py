@@ -40,11 +40,14 @@ class Estoque:
             return False, "Produto já cadastrado"
         self.produtos[produto["ID"]] = produto
         self.salvar_produtos()
+        return True, "Produto cadastrado com sucesso"
 
     def remover_produto(self, id_produto):
         if id_produto in self.produtos:
             del self.produtos[id_produto]
             self.salvar_produtos()
+            return True, "Produto removido com sucesso"
+        return False, "Produto não encontrado"
 
     def atualizar_produto(self, id_produto, produto):
         if id_produto in self.produtos:
@@ -53,6 +56,8 @@ class Estoque:
                     return False, "Nome do produto já cadastrado"
             self.produtos[id_produto].update(produto)
             self.salvar_produtos()
+            return True, "Produto atualizado com sucesso"
+        return False, "Produto não encontrado"
 
     def buscar_produtos(self, nome_produto="", tamanho_pagina=10, pagina=1):
         produtos_filtrados = [
@@ -69,3 +74,5 @@ class Estoque:
         if quantidade_atual >= quantidade:
             self.produtos[id_produto]["Quantidade"] -= quantidade
             self.salvar_produtos()
+            return True, "Compra realizada com sucesso"
+        return False, "Quantidade insuficiente em estoque"
