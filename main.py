@@ -241,7 +241,7 @@ def verificar_estoque(estoque: Estoque):
     scrobble_down_text.setSize(12)
     scrobble_down_text.draw(win)
 
-    offset = 0
+    offset = 1
 
     # loop pra detectar cliques nos botões
     while True:
@@ -386,7 +386,7 @@ def gerar_lista(estoque: Estoque):
 
 
 # função pra realizar uma compra
-def realizar_compra(estoque):
+def realizar_compra(estoque: Estoque):
     win = GraphWin("Realizar Compra", 800, 600)  # cria a janela de realizar compra
     win.setCoords(0, 0, 80, 65)  # define as coordenadas da janela
     win.setBackground("#c29efb")
@@ -446,12 +446,13 @@ def realizar_compra(estoque):
 
     # Adiciona um espaço entre o cabeçalho da tabela e os botões
 
-    offset = 0
+    offset = 1
 
     # função para mostrar os produtos na tela
     def mostrar_produtos(
-        filtrado_estoque, offset=0
+        estoque: Estoque, offset=1, pesquisa=""
     ):  # função pra mostrar os produtos na tela offset=0 é o valor padrão do offset
+        filtrado_estoque = estoque.buscar_produtos(nome_produto=pesquisa, pagina=offset)
         for item in win.items[
             :
         ]:  # [ : ] significa que o loop vai percorrer todos os itens da tela
@@ -459,7 +460,7 @@ def realizar_compra(estoque):
                 isinstance(item, Text) and item.getText() not in headers
             ):  # verifica se o item é um texto e se o texto não está nos cabeçalhos isinstance(item, Text) and item.getText() not in headers significa que o item é um texto e o texto não está nos cabeçalhos
                 item.undraw()
-        for i, produto in enumerate(filtrado_estoque[offset : offset + 10]):
+        for i, produto in enumerate(filtrado_estoque):
             y_pos = (
                 52 - i * 3
             )  # posição do produto na tela com base no índice por isso o i * 3 pra dar um espaçamento entre os produtos
@@ -485,7 +486,7 @@ def realizar_compra(estoque):
             comprar_text.draw(win)
 
     # mostra os produtos iniciais
-    mostrar_produtos(estoque, offset)
+    mostrar_produtos(estoque)
 
     # botão de voltar
     voltar_button = Rectangle(Point(35, 2), Point(45, 4))
@@ -514,7 +515,7 @@ def realizar_compra(estoque):
     while True:
         click = win.getMouse()
         for i, produto in enumerate(
-            estoque[offset : offset + 10]
+            estoque.buscar_produtos(pagina=offset + 1)
         ):  # loop pra detectar cliques nos botões de comprar e decrementar a quantidade do produto
             y_pos = (
                 52 - i * 3
@@ -525,10 +526,7 @@ def realizar_compra(estoque):
                 66 <= click.getX() <= 76 and y_pos - 1 <= click.getY() <= y_pos + 1
             ):  # verifica se o clique foi no botão de comprar
                 if int(produto["Quantidade"]) > 0:
-                    produto["Quantidade"] = str(
-                        int(produto["Quantidade"]) - 1
-                    )  # decrementa a quantidade do produto
-                    salvar_estoque(estoque)
+                    estoque.comprar_produto(produto["ID"], 1)
                     win.close()
                     realizar_compra(estoque)
                     return
@@ -542,28 +540,20 @@ def realizar_compra(estoque):
         elif (
             50 <= click.getX() <= 55 and 2 <= click.getY() <= 4
         ):  # verifica se o clique foi no botão de rolar pra cima
-            if offset > 0:
-                offset -= 10
+            if offset > 1:
+                offset -= 1
                 mostrar_produtos(estoque, offset)
         elif (
             60 <= click.getX() <= 65 and 2 <= click.getY() <= 4
         ):  # verifica se o clique foi no botão de rolar pra baixo
-            if offset + 10 < len(estoque):
-                offset += 10
+            if offset * 10 < len(estoque.produtos):
+                offset += 1
                 mostrar_produtos(estoque, offset)
         elif (
             52 <= click.getX() <= 62 and 55 <= click.getY() <= 57
         ):  # verifica se o clique foi no botão de pesquisar
             pesquisa = pesquisa_entry.getText().lower()
-            filtrado_estoque = [
-                produto
-                for produto in estoque
-                if pesquisa
-                in produto[
-                    "Nome"
-                ].lower()  # pesquisa o produto pelo nome do produto tudo em lowercase pra evitar erros e etc
-            ]
-            mostrar_produtos(filtrado_estoque)
+            mostrar_produtos(estoque, pesquisa=pesquisa)
         elif (
             64 <= click.getX() <= 74 and 55 <= click.getY() <= 57
         ):  # verifica se o clique foi no botão de resetar o vermelho
