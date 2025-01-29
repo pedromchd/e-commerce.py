@@ -345,6 +345,46 @@ def remover_peca():
                 break
 
 
+def comprar_peca():
+    estoque = Estoque(ESTOQUE)
+
+    win = GraphWin("Gerenciar Estoque", WIDTH, HEIGHT)
+    win.setCoords(X1, Y1, X2, Y2)
+    win.setBackground(C_LAVANDA)
+
+    center_window(win)
+
+    draw_text(win, 50, 85, "Comprar Peça", 24, "bold", "black")
+
+    botoes = [
+        {"xywh": (70, 7.5, 30, 5), "text": "Comprar", "color": C_VERDE_ESCURO},
+        {"xywh": (30, 7.5, 30, 5), "text": "Voltar", "color": C_VERMELHO_ESCURO},
+    ]
+
+    for botao in botoes:
+        x, y, w, h = botao["xywh"]
+        draw_button(win, x, y, w, h, botao["text"], botao["color"], C_ROXO_ESCURO)
+
+    draw_text(win, 50, 72.5, "ID", 12, "normal", "black")
+    id = draw_entry(win, 50, 67.5, 20)
+    draw_text(win, 50, 60, "Quantidade", 12, "normal", "black")
+    quantidade = draw_entry(win, 50, 55, 20)
+
+    while True:
+        botao_clicado = check_click(win, botoes)
+        match botao_clicado:
+            case "Comprar":
+                estoque.comprar_produto(id.getText(), int(quantidade.getText()))
+                win.close()
+                realizar_compra()
+            case "Voltar":
+                win.close()
+                realizar_compra()
+            case "Sair":
+                win.close()
+                break
+
+
 def center_window(win):
     screen_width = win.winfo_screenwidth()
     screen_height = win.winfo_screenheight()
