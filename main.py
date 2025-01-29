@@ -103,7 +103,8 @@ def gerenciar_estoque():
                 win.close()
                 cadastrar_peca()
             case "Atualizar Peça":
-                pass
+                win.close()
+                atualizar_peca()
             case "Remover Peça":
                 pass
             case "Exportar Estoque":
@@ -246,6 +247,62 @@ def cadastrar_peca():
                 break
 
 
+def atualizar_peca():
+    estoque = Estoque(ESTOQUE)
+
+    win = GraphWin("Gerenciar Estoque", WIDTH, HEIGHT)
+    win.setCoords(X1, Y1, X2, Y2)
+    win.setBackground(C_LAVANDA)
+
+    center_window(win)
+
+    draw_text(win, 50, 85, "Atualizar Peça", 24, "bold", "black")
+
+    botoes = [
+        {"xywh": (70, 7.5, 30, 5), "text": "Atualizar", "color": C_VERDE_ESCURO},
+        {"xywh": (30, 7.5, 30, 5), "text": "Voltar", "color": C_VERMELHO_ESCURO},
+    ]
+
+    for botao in botoes:
+        x, y, w, h = botao["xywh"]
+        draw_button(win, x, y, w, h, botao["text"], botao["color"], C_ROXO_ESCURO)
+
+    draw_text(win, 50, 72.5, "ID", 12, "normal", "black")
+    id = draw_entry(win, 50, 67.5, 20)
+    draw_text(win, 50, 60, "Nome", 12, "normal", "black")
+    nome = draw_entry(win, 50, 55, 20)
+    draw_text(win, 50, 47.5, "Categoria", 12, "normal", "black")
+    categoria = draw_entry(win, 50, 42.5, 20)
+    draw_text(win, 50, 35, "Quantidade", 12, "normal", "black")
+    quantidade = draw_entry(win, 50, 30, 20)
+    draw_text(win, 50, 22.5, "Preço", 12, "normal", "black")
+    preco = draw_entry(win, 50, 17.5, 20)
+
+    while True:
+        botao_clicado = check_click(win, botoes)
+        match botao_clicado:
+            case "Atualizar":
+                produto = {
+                    "ID": id.getText(),
+                    "Nome": nome.getText(),
+                    "Categoria": categoria.getText(),
+                    "Quantidade": quantidade.getText(),
+                    "Preco": preco.getText(),
+                }
+                for key, value in produto.items():
+                    if not value:
+                        produto[key] = estoque.produtos[id.getText()][key]
+                estoque.atualizar_produto(id.getText(), produto)
+                win.close()
+                gerenciar_estoque()
+            case "Voltar":
+                win.close()
+                gerenciar_estoque()
+            case "Sair":
+                win.close()
+                break
+
+
 def center_window(win):
     screen_width = win.winfo_screenwidth()
     screen_height = win.winfo_screenheight()
@@ -335,32 +392,6 @@ def update_table(win, estoque, pesquisa="", pagina=1, update=False, current=None
     for i, produto in enumerate(produtos):
         draw_row(win, 0, 70 - i * 5, 20, 5, produto.values(), update=update)
     return [value for produto in produtos for value in produto.values()]
-
-
-# # função pra gerar a lista de estoque
-# def gerar_lista(estoque: Estoque):
-#     # cria a pasta reports se nao existir
-#     os.makedirs(os.path.join(os.getcwd(), "reports"), exist_ok=True)
-
-#     file_path = os.path.join(os.getcwd(), "reports", "estoque_report.csv")
-
-#     with open(
-#         file_path,
-#         mode="w",
-#         newline="",
-#         encoding="utf-8",  # abre o arquivo csv pra escrever
-#     ) as file:
-#         fieldnames = ["ID", "Nome", "Categoria", "Quantidade", "Preco"]
-#         writer = csv.DictWriter(
-#             file, fieldnames=fieldnames
-#         )  # escreve no arquivo csv com os cabeçalhos do arquivo
-#         writer.writeheader()  # escreve os cabeçalhos
-#         writer.writerows(estoque.produtos.values())  # escreve as linhas do estoque
-
-#     print(
-#         f"Lista de estoque gerada em {file_path}!"
-#     )  # imprime a mensagem de que a lista foi gerada
-#     interface_principal()
 
 
 if __name__ == "__main__":
