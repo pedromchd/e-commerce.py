@@ -114,11 +114,21 @@ def draw_row(
     bgcolor="white",
     outline="black",
     width=1,
+    update=False,
 ):
     for i, value in enumerate(values):
         x1, y1, x2, y2 = x + i * w, y, x + (i + 1) * w, y + h
-        draw_rectangle(win, x1, y1, x2, y2, bgcolor, outline, width)
-        draw_text(win, x + i * w + w / 2, y + h / 2, value, size, style, color)
+        tx, ty = x + i * w + w / 2, y + h / 2
+        if not update:
+            draw_rectangle(win, x1, y1, x2, y2, bgcolor, outline, width)
+            draw_text(win, tx, ty, value, size, style, color)
+        else:
+            for item in win.items[:]:
+                if isinstance(item, Text):
+                    ix, iy = item.getAnchor().getX(), item.getAnchor().getY()
+                if ix == tx and iy == ty:
+                    item.setText(value)
+                    break
 
 
 def check_click(win, buttons):
