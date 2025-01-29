@@ -27,24 +27,25 @@ def main():
     draw_text(win, 50, 75, "Auto-commerce", 24, "bold", "white")
 
     botoes = [
-        {"xywh": (50, 50, 30, 7), "text": "Verificar Estoque"},
-        {"xywh": (50, 40, 30, 7), "text": "Cadastrar Peça"},
-        {"xywh": (50, 30, 30, 7), "text": "Gerar Lista"},
-        {"xywh": (50, 20, 30, 7), "text": "Realizar Compra"},
-        {"xywh": (50, 10, 30, 7), "text": "Sair"},
+        {"xywh": (50, 40, 40, 10), "text": "Gerenciar Estoque"},
+        {"xywh": (50, 25, 40, 10), "text": "Realizar Compras"},
+        {"xywh": (50, 10, 40, 10), "text": "Sair"},
     ]
 
     for botao in botoes:
         x, y, w, h = botao["xywh"]
         draw_button(win, x, y, w, h, botao["text"], C_ROXO, C_ROXO_ESCURO)
 
-    botao_clicado = None
-    while botao_clicado != "Sair":
+    while True:
         botao_clicado = check_click(win, botoes)
-        if botao_clicado:
-            print(f"Você clicou em: {botao_clicado}")
-
-    win.close()
+        match botao_clicado:
+            case "Gerenciar Estoque":
+                pass
+            case "Realizar Compras":
+                pass
+            case "Sair":
+                win.close()
+                break
 
 
 # Função para centralizar a janela
@@ -89,7 +90,10 @@ def draw_button(win, x, y, w, h, text, color, outline, width=2):
 
 
 def check_click(win, buttons):
-    click = win.getMouse()
+    try:
+        click = win.getMouse()
+    except GraphicsError:
+        return "Sair"
     for button in buttons:
         x, y, w, h = button["xywh"]
         x1, y1, x2, y2 = x - w / 2, y - h / 2, x + w / 2, y + h / 2
@@ -650,6 +654,5 @@ def realizar_compra(estoque: Estoque):
             mostrar_produtos(estoque)
 
 
-# inicia a interface principal quando o script é executado
 if __name__ == "__main__":
-    interface_principal()
+    main()
