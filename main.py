@@ -31,7 +31,7 @@ def main():
 
     botoes = [
         {"xywh": (50, 40, 40, 10), "text": "Gerenciar Estoque"},
-        {"xywh": (50, 25, 40, 10), "text": "Realizar Compras"},
+        {"xywh": (50, 25, 40, 10), "text": "Realizar Compra"},
         {"xywh": (50, 10, 40, 10), "text": "Sair"},
     ]
 
@@ -45,8 +45,9 @@ def main():
             case "Gerenciar Estoque":
                 win.close()
                 gerenciar_estoque()
-            case "Realizar Compras":
-                pass
+            case "Realizar Compra":
+                win.close()
+                realizar_compra()
             case "Sair":
                 win.close()
                 break
@@ -104,6 +105,74 @@ def gerenciar_estoque():
             case "Atualizar Peça":
                 pass
             case "Remover Peça":
+                pass
+            case "Exportar Estoque":
+                pass
+            case "Voltar":
+                win.close()
+                main()
+            case "↑":
+                if pagina > 1:
+                    pagina -= 1
+                    current = update_table(
+                        win, estoque, pagina=pagina, update=True, current=current
+                    )
+            case "↓":
+                if pagina * 10 < len(estoque.produtos):
+                    pagina += 1
+                    current = update_table(
+                        win, estoque, pagina=pagina, update=True, current=current
+                    )
+            case "Sair":
+                win.close()
+                break
+
+
+def realizar_compra():
+    estoque = Estoque(ESTOQUE)
+
+    win = GraphWin("Gerenciar Estoque", WIDTH, HEIGHT)
+    win.setCoords(X1, Y1, X2, Y2)
+    win.setBackground(C_LAVANDA)
+
+    center_window(win)
+
+    draw_text(win, 20, 90, "Pesquisar por nome:", 12, "normal", "black")
+
+    botoes = [
+        {"xywh": (75, 90, 16, 5), "text": "Pesquisar", "color": C_VERDE},
+        {"xywh": (90, 90, 12.5, 5), "text": "Resetar", "color": C_VERMELHO},
+        {"xywh": (50, 12.5, 30, 5), "text": "Comprar Peça", "color": C_ROXO_ESCURO},
+        {"xywh": (50, 5, 30, 5), "text": "Exportar Estoque", "color": C_VERDE_ESCURO},
+        {"xywh": (10, 20, 16, 5), "text": "Voltar", "color": C_VERMELHO_ESCURO},
+        {"xywh": (85, 20, 5, 5), "text": "↑", "color": C_ROXO},
+        {"xywh": (95, 20, 5, 5), "text": "↓", "color": C_ROXO},
+    ]
+
+    for botao in botoes:
+        x, y, w, h = botao["xywh"]
+        draw_button(win, x, y, w, h, botao["text"], botao["color"], C_ROXO_ESCURO)
+
+    entry = draw_entry(win, 50, 90, 20)
+
+    headers = ["Nome", "Categoria", "Quantidade", "Preço", "Comprar"]
+    draw_row(win, 0, 75, 20, 5, headers, style="bold")
+    current = update_table(win, estoque)
+
+    pagina = 1
+
+    while True:
+        botao_clicado = check_click(win, botoes)
+        match botao_clicado:
+            case "Pesquisar":
+                pesquisa = entry.getText().lower()
+                current = update_table(
+                    win, estoque, pesquisa, update=True, current=current
+                )
+            case "Resetar":
+                entry.setText("")
+                current = update_table(win, estoque, update=True, current=current)
+            case "Comprar Peça":
                 pass
             case "Exportar Estoque":
                 pass
@@ -332,182 +401,6 @@ def cadastrar_peca(estoque: Estoque):
 #         f"Lista de estoque gerada em {file_path}!"
 #     )  # imprime a mensagem de que a lista foi gerada
 #     interface_principal()
-
-
-# função pra realizar uma compra
-def realizar_compra(estoque: Estoque):
-    win = GraphWin("Realizar Compra", 800, 600)  # cria a janela de realizar compra
-    win.setCoords(0, 0, 80, 65)  # define as coordenadas da janela
-    win.setBackground("#c29efb")
-
-    # Centraliza a janela no meio do monitor
-    screen_width = win.winfo_screenwidth()
-    screen_height = win.winfo_screenheight()
-    x = (screen_width // 2) - (600 // 2)
-    y = (screen_height // 2) - (600 // 2)
-    win.master.geometry(f"+{x}+{y}")
-
-    # título da janela
-    titulo = Text(Point(40, 58), "Realizar Compra")
-    titulo.setSize(16)
-    titulo.setStyle("bold")
-    titulo.draw(win)
-
-    # campo de pesquisa
-    pesquisa_label = Text(Point(10, 60), "Pesquisar por Nome:")
-    pesquisa_label.draw(win)
-    pesquisa_entry = Entry(Point(30, 60), 20)
-    pesquisa_entry.draw(win)
-    pesquisar_button = Rectangle(Point(52, 59), Point(62, 61))
-    pesquisar_button.setFill("#4CAF50")
-    pesquisar_button.setOutline("#388E3C")
-    pesquisar_button.setWidth(2)
-    pesquisar_button.draw(win)
-    pesquisar_text = Text(Point(57, 60), "🔍 Pesquisar")
-    pesquisar_text.setSize(12)
-    pesquisar_text.setStyle("bold")
-    pesquisar_text.setTextColor("white")
-    pesquisar_text.draw(win)
-
-    resetar_button = Rectangle(
-        Point(64, 59), Point(74, 61)
-    )  # botão de resetar que funciona como um botão de limpar a pesquisa e voltar ao estoque inicial
-    resetar_button.setFill("red")
-    resetar_button.setOutline("darkred")
-    resetar_button.setWidth(2)
-    resetar_button.draw(win)
-    resetar_text = Text(Point(69, 60), "Resetar")
-    resetar_text.setSize(12)
-    resetar_text.setStyle("bold")
-    resetar_text.setTextColor("white")
-    resetar_text.draw(win)
-    space = Text(Point(40, 54), " ")
-    space.draw(win)
-    # cabeçalhos da tabela
-    headers = ["ID", "Nome", "Categoria", "Quantidade", "Preço", "Ação"]
-    for i, header in enumerate(headers):
-        header_text = Text(
-            Point(10 + i * 12, 56), header
-        )  # texto do cabeçalho da tabela com base no índice do loop 10 + i * 12 significa que o texto começa em 10 e vai incrementando de 12 em 12 e o 52 é a posição do texto na tela
-        header_text.setSize(12)
-        header_text.setStyle("bold")
-        header_text.draw(win)
-
-    # Adiciona um espaço entre o cabeçalho da tabela e os botões
-
-    offset = 1
-
-    # função para mostrar os produtos na tela
-    def mostrar_produtos(
-        estoque: Estoque, offset=1, pesquisa=""
-    ):  # função pra mostrar os produtos na tela offset=0 é o valor padrão do offset
-        filtrado_estoque = estoque.buscar_produtos(nome_produto=pesquisa, pagina=offset)
-        for item in win.items[
-            :
-        ]:  # [ : ] significa que o loop vai percorrer todos os itens da tela
-            if (
-                isinstance(item, Text) and item.getText() not in headers
-            ):  # verifica se o item é um texto e se o texto não está nos cabeçalhos isinstance(item, Text) and item.getText() not in headers significa que o item é um texto e o texto não está nos cabeçalhos
-                item.undraw()
-        for i, produto in enumerate(filtrado_estoque):
-            y_pos = (
-                52 - i * 3
-            )  # posição do produto na tela com base no índice por isso o i * 3 pra dar um espaçamento entre os produtos
-            if y_pos < 0:  # se a posição do produto for menor que 0, quebra o loop
-                break
-            id_text = Text(Point(10, y_pos), produto["ID"])  # texto do ID do produto
-            id_text.draw(win)
-            nome_text = Text(Point(22, y_pos), produto["Nome"])
-            nome_text.draw(win)
-            categoria_text = Text(Point(34, y_pos), produto["Categoria"])
-            categoria_text.draw(win)
-            quantidade_text = Text(Point(46, y_pos), produto["Quantidade"])
-            quantidade_text.draw(win)
-            preco_text = Text(Point(58, y_pos), f"R$ {produto['Preco']}")
-            preco_text.draw(win)
-
-            # botão de comprar
-            comprar_button = Rectangle(Point(66, y_pos - 1), Point(76, y_pos + 1))
-            comprar_button.setFill("lightgreen")
-            comprar_button.draw(win)
-            comprar_text = Text(Point(71, y_pos), "Comprar")
-            comprar_text.setSize(12)
-            comprar_text.draw(win)
-
-    # mostra os produtos iniciais
-    mostrar_produtos(estoque)
-
-    # botão de voltar
-    voltar_button = Rectangle(Point(35, 2), Point(45, 4))
-    voltar_button.setFill("lightblue")
-    voltar_button.draw(win)
-    voltar_text = Text(Point(40, 3), "Voltar")
-    voltar_text.setSize(12)
-    voltar_text.draw(win)
-
-    # botões de rolagem
-    scrobble_up_button = Rectangle(Point(50, 2), Point(55, 4))
-    scrobble_up_button.setFill("lightgrey")
-    scrobble_up_button.draw(win)
-    scrobble_up_text = Text(Point(52.5, 3), "⬆")
-    scrobble_up_text.setSize(12)
-    scrobble_up_text.draw(win)
-
-    scrobble_down_button = Rectangle(Point(60, 2), Point(65, 4))
-    scrobble_down_button.setFill("lightgrey")
-    scrobble_down_button.draw(win)
-    scrobble_down_text = Text(Point(62.5, 3), "⬇")
-    scrobble_down_text.setSize(12)
-    scrobble_down_text.draw(win)
-
-    # loop para detectar cliques nos botões
-    while True:
-        click = win.getMouse()
-        for i, produto in enumerate(
-            estoque.buscar_produtos(pagina=offset + 1)
-        ):  # loop pra detectar cliques nos botões de comprar e decrementar a quantidade do produto
-            y_pos = (
-                52 - i * 3
-            )  # posição do produto na tela com base no índice por isso o i * 3 pra dar um espaçamento entre os produtos
-            if y_pos < 0:
-                break
-            if (
-                66 <= click.getX() <= 76 and y_pos - 1 <= click.getY() <= y_pos + 1
-            ):  # verifica se o clique foi no botão de comprar
-                if int(produto["Quantidade"]) > 0:
-                    estoque.comprar_produto(produto["ID"], 1)
-                    win.close()
-                    realizar_compra(estoque)
-                    return
-
-        if (
-            35 <= click.getX() <= 45 and 2 <= click.getY() <= 4
-        ):  # verifica se o clique foi no botão de voltar
-            win.close()
-            interface_principal()
-            break
-        elif (
-            50 <= click.getX() <= 55 and 2 <= click.getY() <= 4
-        ):  # verifica se o clique foi no botão de rolar pra cima
-            if offset > 1:
-                offset -= 1
-                mostrar_produtos(estoque, offset)
-        elif (
-            60 <= click.getX() <= 65 and 2 <= click.getY() <= 4
-        ):  # verifica se o clique foi no botão de rolar pra baixo
-            if offset * 10 < len(estoque.produtos):
-                offset += 1
-                mostrar_produtos(estoque, offset)
-        elif (
-            52 <= click.getX() <= 62 and 55 <= click.getY() <= 57
-        ):  # verifica se o clique foi no botão de pesquisar
-            pesquisa = pesquisa_entry.getText().lower()
-            mostrar_produtos(estoque, pesquisa=pesquisa)
-        elif (
-            64 <= click.getX() <= 74 and 55 <= click.getY() <= 57
-        ):  # verifica se o clique foi no botão de resetar o vermelho
-            pesquisa_entry.setText("")
-            mostrar_produtos(estoque)
 
 
 if __name__ == "__main__":
