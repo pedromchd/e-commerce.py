@@ -7,6 +7,11 @@ WIDTH, HEIGHT = 640, 480
 
 X1, Y1, X2, Y2 = 0, 0, 100, 100
 
+C_ROXO = "#521580"  # Roxo
+C_ROXO_ESCURO = "#20062a"  # Roxo escuro
+C_VERMELHO = "#df0c40"  # Vermelho
+C_VERMELHO_ESCURO = "#9c8dfb"  # Vermelho escuro
+
 ESTOQUE = os.path.join(os.getcwd(), "data", "estoque.csv")
 
 
