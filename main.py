@@ -109,7 +109,7 @@ def gerenciar_estoque():
                 win.close()
                 remover_peca()
             case "Exportar Estoque":
-                exportar_estoque(current)
+                exportar_estoque(current, headers)
             case "Voltar":
                 win.close()
                 main()
@@ -157,7 +157,7 @@ def realizar_compra():
 
     entry = draw_entry(win, 50, 90, 20)
 
-    headers = ["Nome", "Categoria", "Quantidade", "Preço", "Comprar"]
+    headers = ["ID", "Nome", "Categoria", "Quantidade", "Preço"]
     draw_row(win, 0, 75, 20, 5, headers, style="bold")
     current = update_table(win, estoque)
 
@@ -178,7 +178,7 @@ def realizar_compra():
                 win.close()
                 comprar_peca()
             case "Exportar Estoque":
-                exportar_estoque(current)
+                exportar_estoque(current, headers)
             case "Voltar":
                 win.close()
                 main()
@@ -238,7 +238,9 @@ def cadastrar_peca():
                     "Quantidade": quantidade.getText(),
                     "Preco": preco.getText(),
                 }
-                estoque.adicionar_produto(produto)
+                suc, msg = estoque.adicionar_produto(produto)
+                if not suc:
+                    popup(win, suc, msg)
                 win.close()
                 gerenciar_estoque()
             case "Voltar":
@@ -294,7 +296,9 @@ def atualizar_peca():
                 for key, value in produto.items():
                     if not value:
                         produto[key] = estoque.produtos[id.getText()][key]
-                estoque.atualizar_produto(id.getText(), produto)
+                suc, msg = estoque.atualizar_produto(id.getText(), produto)
+                if not suc:
+                    popup(win, suc, msg)
                 win.close()
                 gerenciar_estoque()
             case "Voltar":
@@ -332,7 +336,9 @@ def remover_peca():
         botao_clicado = check_click(win, botoes)
         match botao_clicado:
             case "Remover":
-                estoque.remover_produto(id.getText())
+                suc, msg = estoque.remover_produto(id.getText())
+                if not suc:
+                    popup(win, suc, msg)
                 win.close()
                 gerenciar_estoque()
             case "Voltar":
@@ -372,7 +378,9 @@ def comprar_peca():
         botao_clicado = check_click(win, botoes)
         match botao_clicado:
             case "Comprar":
-                estoque.comprar_produto(id.getText(), int(quantidade.getText()))
+                suc, msg = estoque.comprar_produto(id.getText(), int(quantidade.getText()))
+                if not suc:
+                    popup(win, suc, msg)
                 win.close()
                 realizar_compra()
             case "Voltar":
@@ -383,7 +391,17 @@ def comprar_peca():
                 break
 
 
-def exportar_estoque(current):
+def popup(win, suc, msg):
+    title = "Sucesso" if suc else "Erro"
+    win = GraphWin(title, 200, 100)
+    win.setCoords(X1, Y1, X2, Y2)
+    win.setBackground(C_LAVANDA)
+    draw_text(win, 50, 50, msg, 12, "bold", "black")
+    win.getMouse()
+    win.close()
+
+
+def exportar_estoque(current, headers):
     matrix = [current[i : i + 5] for i in range(0, len(current), 5)]
     html = """
     <h1>Estoque</h1>
@@ -392,6 +410,7 @@ def exportar_estoque(current):
     <body>
     <table border='1'>
     """
+    html += "<tr>" + "".join(f"<th>{header}</th>" for header in headers) + "</tr>"
     for row in matrix:
         html += "<tr>" + "".join(f"<td>{cell}</td>" for cell in row) + "</tr>"
     html += "</table></body></html>"
