@@ -66,7 +66,9 @@ def gerenciar_estoque():
     botoes = [
         {"xywh": (75, 90, 16, 5), "text": "Pesquisar", "color": C_VERDE},
         {"xywh": (90, 90, 12.5, 5), "text": "Resetar", "color": C_VERMELHO},
-        {"xywh": (50, 12.5, 30, 5), "text": "Cadastrar Peça", "color": C_ROXO_ESCURO},
+        {"xywh": (17.5, 12.5, 30, 5), "text": "Cadastrar Peça", "color": C_ROXO_ESCURO},
+        {"xywh": (50, 12.5, 30, 5), "text": "Atualizar Peça", "color": C_ROXO_ESCURO},
+        {"xywh": (82.5, 12.5, 30, 5), "text": "Remover Peça", "color": C_ROXO_ESCURO},
         {"xywh": (50, 5, 30, 5), "text": "Exportar Estoque", "color": C_VERDE_ESCURO},
         {"xywh": (10, 20, 16, 5), "text": "Voltar", "color": C_VERMELHO_ESCURO},
         {"xywh": (85, 20, 5, 5), "text": "↑", "color": C_ROXO},
@@ -99,6 +101,10 @@ def gerenciar_estoque():
             case "Cadastrar Peça":
                 win.close()
                 cadastrar_peca(estoque)
+            case "Atualizar Peça":
+                pass
+            case "Remover Peça":
+                pass
             case "Exportar Estoque":
                 pass
             case "Voltar":
