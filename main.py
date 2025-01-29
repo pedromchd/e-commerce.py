@@ -68,6 +68,7 @@ def center_window(win):
 def draw_image(win, img_path, x, y):
     img = Image(Point(x, y), img_path)
     img.draw(win)
+    return img
 
 
 def draw_text(win, x, y, text, size=12, style="bold", color="black"):
@@ -76,6 +77,7 @@ def draw_text(win, x, y, text, size=12, style="bold", color="black"):
     text.setStyle(style)
     text.setTextColor(color)
     text.draw(win)
+    return text
 
 
 def draw_rectangle(win, x1, y1, x2, y2, color, outline, width=2):
@@ -84,6 +86,7 @@ def draw_rectangle(win, x1, y1, x2, y2, color, outline, width=2):
     rect.setOutline(outline)
     rect.setWidth(width)
     rect.draw(win)
+    return rect
 
 
 def draw_button(win, x, y, w, h, text, color, outline, width=2):
