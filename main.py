@@ -52,17 +52,80 @@ def main():
                 break
 
 
-# Função para centralizar a janela
+def gerenciar_estoque():
+    estoque = Estoque(ESTOQUE)
+
+    win = GraphWin("Gerenciar Estoque", WIDTH, HEIGHT)
+    win.setCoords(X1, Y1, X2, Y2)
+    win.setBackground(C_LAVANDA)
+
+    center_window(win)
+
+    draw_text(win, 20, 90, "Pesquisar por nome:", 12, "normal", "black")
+
+    botoes = [
+        {"xywh": (75, 90, 16, 5), "text": "Pesquisar", "color": C_VERDE},
+        {"xywh": (90, 90, 12.5, 5), "text": "Resetar", "color": C_VERMELHO},
+        {"xywh": (50, 12.5, 30, 5), "text": "Cadastrar Peça", "color": C_ROXO_ESCURO},
+        {"xywh": (50, 5, 30, 5), "text": "Exportar Estoque", "color": C_VERDE_ESCURO},
+        {"xywh": (10, 20, 16, 5), "text": "Voltar", "color": C_VERMELHO_ESCURO},
+        {"xywh": (85, 20, 5, 5), "text": "↑", "color": C_ROXO},
+        {"xywh": (95, 20, 5, 5), "text": "↓", "color": C_ROXO},
+    ]
+
+    for botao in botoes:
+        x, y, w, h = botao["xywh"]
+        draw_button(win, x, y, w, h, botao["text"], botao["color"], C_ROXO_ESCURO)
+
+    entry = draw_entry(win, 50, 90, 20)
+
+    headers = ["ID", "Nome", "Categoria", "Quantidade", "Preço"]
+    draw_row(win, 0, 75, 20, 5, headers, style="bold")
+    current = update_table(win, estoque)
+
+    pagina = 1
+
+    while True:
+        botao_clicado = check_click(win, botoes)
+        match botao_clicado:
+            case "Pesquisar":
+                pesquisa = entry.getText().lower()
+                current = update_table(
+                    win, estoque, pesquisa, update=True, current=current
+                )
+            case "Resetar":
+                entry.setText("")
+                current = update_table(win, estoque, update=True, current=current)
+            case "Cadastrar Peça":
+                win.close()
+                cadastrar_peca(estoque)
+            case "Exportar Estoque":
+                pass
+            case "Voltar":
+                win.close()
+                main()
+            case "↑":
+                if pagina > 1:
+                    pagina -= 1
+                    current = update_table(
+                        win, estoque, pagina=pagina, update=True, current=current
+                    )
+            case "↓":
+                if pagina * 10 < len(estoque.produtos):
+                    pagina += 1
+                    current = update_table(
+                        win, estoque, pagina=pagina, update=True, current=current
+                    )
+            case "Sair":
+                win.close()
+                break
+
+
 def center_window(win):
-    # Obtém as dimensões da tela
     screen_width = win.winfo_screenwidth()
     screen_height = win.winfo_screenheight()
-
-    # Calcula a posição x e y para centralizar a janela
     x = (screen_width // 2) - (WIDTH // 2)
     y = (screen_height // 2) - (HEIGHT // 2)
-
-    # Define a geometria da janela
     win.master.geometry(f"{WIDTH}x{HEIGHT}+{x}+{y}")
 
 
@@ -147,75 +210,6 @@ def update_table(win, estoque, pesquisa="", pagina=1, update=False, current=None
     for i, produto in enumerate(produtos):
         draw_row(win, 0, 70 - i * 5, 20, 5, produto.values(), update=update)
     return [value for produto in produtos for value in produto.values()]
-
-
-def gerenciar_estoque():
-    estoque = Estoque(ESTOQUE)
-
-    win = GraphWin("Gerenciar Estoque", WIDTH, HEIGHT)
-    win.setCoords(X1, Y1, X2, Y2)
-    win.setBackground(C_LAVANDA)
-
-    center_window(win)
-
-    draw_text(win, 20, 90, "Pesquisar por nome:", 12, "normal", "black")
-
-    botoes = [
-        {"xywh": (75, 90, 16, 5), "text": "Pesquisar", "color": C_VERDE},
-        {"xywh": (90, 90, 12.5, 5), "text": "Resetar", "color": C_VERMELHO},
-        {"xywh": (50, 12.5, 30, 5), "text": "Cadastrar Peça", "color": C_ROXO_ESCURO},
-        {"xywh": (50, 5, 30, 5), "text": "Exportar Estoque", "color": C_VERDE_ESCURO},
-        {"xywh": (10, 20, 16, 5), "text": "Voltar", "color": C_VERMELHO_ESCURO},
-        {"xywh": (85, 20, 5, 5), "text": "↑", "color": C_ROXO},
-        {"xywh": (95, 20, 5, 5), "text": "↓", "color": C_ROXO},
-    ]
-
-    for botao in botoes:
-        x, y, w, h = botao["xywh"]
-        draw_button(win, x, y, w, h, botao["text"], botao["color"], C_ROXO_ESCURO)
-
-    entry = draw_entry(win, 50, 90, 20)
-
-    headers = ["ID", "Nome", "Categoria", "Quantidade", "Preço"]
-    draw_row(win, 0, 75, 20, 5, headers, style="bold")
-    current = update_table(win, estoque)
-
-    pagina = 1
-
-    while True:
-        botao_clicado = check_click(win, botoes)
-        match botao_clicado:
-            case "Pesquisar":
-                pesquisa = entry.getText().lower()
-                current = update_table(
-                    win, estoque, pesquisa, update=True, current=current
-                )
-            case "Resetar":
-                entry.setText("")
-                current = update_table(win, estoque, update=True, current=current)
-            case "Cadastrar Peça":
-                win.close()
-                cadastrar_peca(estoque)
-            case "Exportar Estoque":
-                pass
-            case "Voltar":
-                win.close()
-                main()
-            case "↑":
-                if pagina > 1:
-                    pagina -= 1
-                    current = update_table(
-                        win, estoque, pagina=pagina, update=True, current=current
-                    )
-            case "↓":
-                if pagina * 10 < len(estoque.produtos):
-                    pagina += 1
-                    current = update_table(
-                        win, estoque, pagina=pagina, update=True, current=current
-                    )
-            case "Sair":
-                win.close()
-                break
 
 
 # função pra cadastrar uma nova peça
