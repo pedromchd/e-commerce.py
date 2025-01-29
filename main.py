@@ -1,6 +1,7 @@
-import csv
+# import csv
 import os
-import webbrowser
+
+# import webbrowser
 
 from lib.estoque import Estoque
 from lib.graphics import *
@@ -56,7 +57,7 @@ def interface_principal():
     buttons = {
         "Verificar Estoque": Rectangle(Point(15, 35), Point(35, 37)),
         "Cadastrar Peça": Rectangle(Point(15, 30), Point(35, 32)),
-        "Gerar Lista": Rectangle(Point(15, 25), Point(35, 27)),
+        # "Gerar Lista": Rectangle(Point(15, 25), Point(35, 27)),
         "Realizar Compra": Rectangle(Point(15, 20), Point(35, 22)),
         "Sair": Rectangle(Point(15, 15), Point(35, 17)),
     }
@@ -105,13 +106,13 @@ def interface_principal():
             cadastrar_peca(estoque)
             break
 
-        # gerar lista
-        elif (
-            15 <= click.getX() <= 35 and 25 <= click.getY() <= 27
-        ):  # verifica se o clique foi no botão de gerar lista
-            win.close()
-            gerar_lista(estoque)
-            break
+        # # gerar lista
+        # elif (
+        #     15 <= click.getX() <= 35 and 25 <= click.getY() <= 27
+        # ):  # verifica se o clique foi no botão de gerar lista
+        #     win.close()
+        #     gerar_lista(estoque)
+        #     break
 
         # realizar compra
         elif (
@@ -359,30 +360,30 @@ def cadastrar_peca(estoque: Estoque):
     interface_principal()
 
 
-# função pra gerar a lista de estoque
-def gerar_lista(estoque: Estoque):
-    # cria a pasta reports se nao existir
-    os.makedirs(os.path.join(os.getcwd(), "reports"), exist_ok=True)
+# # função pra gerar a lista de estoque
+# def gerar_lista(estoque: Estoque):
+#     # cria a pasta reports se nao existir
+#     os.makedirs(os.path.join(os.getcwd(), "reports"), exist_ok=True)
 
-    file_path = os.path.join(os.getcwd(), "reports", "estoque_report.csv")
+#     file_path = os.path.join(os.getcwd(), "reports", "estoque_report.csv")
 
-    with open(
-        file_path,
-        mode="w",
-        newline="",
-        encoding="utf-8",  # abre o arquivo csv pra escrever
-    ) as file:
-        fieldnames = ["ID", "Nome", "Categoria", "Quantidade", "Preco"]
-        writer = csv.DictWriter(
-            file, fieldnames=fieldnames
-        )  # escreve no arquivo csv com os cabeçalhos do arquivo
-        writer.writeheader()  # escreve os cabeçalhos
-        writer.writerows(estoque.produtos.values())  # escreve as linhas do estoque
+#     with open(
+#         file_path,
+#         mode="w",
+#         newline="",
+#         encoding="utf-8",  # abre o arquivo csv pra escrever
+#     ) as file:
+#         fieldnames = ["ID", "Nome", "Categoria", "Quantidade", "Preco"]
+#         writer = csv.DictWriter(
+#             file, fieldnames=fieldnames
+#         )  # escreve no arquivo csv com os cabeçalhos do arquivo
+#         writer.writeheader()  # escreve os cabeçalhos
+#         writer.writerows(estoque.produtos.values())  # escreve as linhas do estoque
 
-    print(
-        f"Lista de estoque gerada em {file_path}!"
-    )  # imprime a mensagem de que a lista foi gerada
-    interface_principal()
+#     print(
+#         f"Lista de estoque gerada em {file_path}!"
+#     )  # imprime a mensagem de que a lista foi gerada
+#     interface_principal()
 
 
 # função pra realizar uma compra
