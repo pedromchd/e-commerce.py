@@ -38,7 +38,11 @@ def main():
         x, y, w, h = botao["xywh"]
         draw_button(win, x, y, w, h, botao["text"], C_ROXO, C_ROXO_ESCURO)
 
-    win.getMouse()
+    botao_clicado = None
+    while botao_clicado != "Sair":
+        botao_clicado = check_click(win, botoes)
+        if botao_clicado:
+            print(f"Você clicou em: {botao_clicado}")
 
     win.close()
 
@@ -82,6 +86,16 @@ def draw_button(win, x, y, w, h, text, color, outline, width=2):
     x1, y1, x2, y2 = x - w / 2, y - h / 2, x + w / 2, y + h / 2
     draw_rectangle(win, x1, y1, x2, y2, color, outline, width)
     draw_text(win, x, y, text, 12, "bold", "white")
+
+
+def check_click(win, buttons):
+    click = win.getMouse()
+    for button in buttons:
+        x, y, w, h = button["xywh"]
+        x1, y1, x2, y2 = x - w / 2, y - h / 2, x + w / 2, y + h / 2
+        if x1 <= click.getX() <= x2 and y1 <= click.getY() <= y2:
+            return button["text"]
+    return None
 
 
 # função principal da interface gráfica
