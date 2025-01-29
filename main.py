@@ -238,7 +238,9 @@ def cadastrar_peca():
                     "Quantidade": quantidade.getText(),
                     "Preco": preco.getText(),
                 }
-                estoque.adicionar_produto(produto)
+                suc, msg = estoque.adicionar_produto(produto)
+                if not suc:
+                    popup(win, suc, msg)
                 win.close()
                 gerenciar_estoque()
             case "Voltar":
@@ -294,7 +296,9 @@ def atualizar_peca():
                 for key, value in produto.items():
                     if not value:
                         produto[key] = estoque.produtos[id.getText()][key]
-                estoque.atualizar_produto(id.getText(), produto)
+                suc, msg = estoque.atualizar_produto(id.getText(), produto)
+                if not suc:
+                    popup(win, suc, msg)
                 win.close()
                 gerenciar_estoque()
             case "Voltar":
@@ -332,7 +336,9 @@ def remover_peca():
         botao_clicado = check_click(win, botoes)
         match botao_clicado:
             case "Remover":
-                estoque.remover_produto(id.getText())
+                suc, msg = estoque.remover_produto(id.getText())
+                if not suc:
+                    popup(win, suc, msg)
                 win.close()
                 gerenciar_estoque()
             case "Voltar":
@@ -372,7 +378,9 @@ def comprar_peca():
         botao_clicado = check_click(win, botoes)
         match botao_clicado:
             case "Comprar":
-                estoque.comprar_produto(id.getText(), int(quantidade.getText()))
+                suc, msg = estoque.comprar_produto(id.getText(), int(quantidade.getText()))
+                if not suc:
+                    popup(win, suc, msg)
                 win.close()
                 realizar_compra()
             case "Voltar":
@@ -381,6 +389,16 @@ def comprar_peca():
             case "Sair":
                 win.close()
                 break
+
+
+def popup(win, suc, msg):
+    title = "Sucesso" if suc else "Erro"
+    win = GraphWin(title, 200, 100)
+    win.setCoords(X1, Y1, X2, Y2)
+    win.setBackground(C_LAVANDA)
+    draw_text(win, 50, 50, msg, 12, "bold", "black")
+    win.getMouse()
+    win.close()
 
 
 def exportar_estoque(current, headers):
