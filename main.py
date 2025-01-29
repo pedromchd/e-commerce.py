@@ -121,14 +121,7 @@ def draw_row(
         tx, ty = x + i * w + w / 2, y + h / 2
         if not update:
             draw_rectangle(win, x1, y1, x2, y2, bgcolor, outline, width)
-            draw_text(win, tx, ty, value, size, style, color)
-        else:
-            for item in win.items[:]:
-                if isinstance(item, Text):
-                    ix, iy = item.getAnchor().getX(), item.getAnchor().getY()
-                if ix == tx and iy == ty:
-                    item.setText(value)
-                    break
+        draw_text(win, tx, ty, value, size, style, color)
 
 
 def check_click(win, buttons):
