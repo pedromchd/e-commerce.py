@@ -109,7 +109,7 @@ def gerenciar_estoque():
                 win.close()
                 remover_peca()
             case "Exportar Estoque":
-                exportar_estoque(current)
+                exportar_estoque(current, headers)
             case "Voltar":
                 win.close()
                 main()
@@ -157,7 +157,7 @@ def realizar_compra():
 
     entry = draw_entry(win, 50, 90, 20)
 
-    headers = ["Nome", "Categoria", "Quantidade", "Preço", "Comprar"]
+    headers = ["ID", "Nome", "Categoria", "Quantidade", "Preço"]
     draw_row(win, 0, 75, 20, 5, headers, style="bold")
     current = update_table(win, estoque)
 
@@ -178,7 +178,7 @@ def realizar_compra():
                 win.close()
                 comprar_peca()
             case "Exportar Estoque":
-                exportar_estoque(current)
+                exportar_estoque(current, headers)
             case "Voltar":
                 win.close()
                 main()
@@ -383,7 +383,7 @@ def comprar_peca():
                 break
 
 
-def exportar_estoque(current):
+def exportar_estoque(current, headers):
     matrix = [current[i : i + 5] for i in range(0, len(current), 5)]
     html = """
     <h1>Estoque</h1>
@@ -392,6 +392,7 @@ def exportar_estoque(current):
     <body>
     <table border='1'>
     """
+    html += "<tr>" + "".join(f"<th>{header}</th>" for header in headers) + "</tr>"
     for row in matrix:
         html += "<tr>" + "".join(f"<td>{cell}</td>" for cell in row) + "</tr>"
     html += "</table></body></html>"
