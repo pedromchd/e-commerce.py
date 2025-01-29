@@ -17,9 +17,14 @@ ESTOQUE = os.path.join(os.getcwd(), "data", "estoque.csv")
 
 def main():
     win = GraphWin("Auto-commerce: Peças de Carro e Artigos Esportivos", WIDTH, HEIGHT)
+    win.setCoords(X1, Y1, X2, Y2)
+
     center_window(win)
 
-    win.setCoords(X1, Y1, X2, Y2)
+    bg_img = os.path.join(os.getcwd(), "img", "bg", "1.png")
+    draw_image(win, bg_img, 50, 50)
+
+    draw_text(win, 50, 75, "Auto-commerce", 24, "bold", "white")
 
     win.getMouse()
 
@@ -38,6 +43,34 @@ def center_window(win):
 
     # Define a geometria da janela
     win.master.geometry(f"{WIDTH}x{HEIGHT}+{x}+{y}")
+
+
+def draw_image(win, img_path, x, y):
+    img = Image(Point(x, y), img_path)
+    img.draw(win)
+
+
+def draw_text(win, x, y, text, size=12, style="bold", color="black"):
+    text = Text(Point(x, y), text)
+    text.setSize(size)
+    text.setStyle(style)
+    text.setTextColor(color)
+    text.draw(win)
+
+
+def draw_rectangle(win, x1, y1, x2, y2, color, outline, width=2):
+    rect = Rectangle(Point(x1, y1), Point(x2, y2))
+    rect.setFill(color)
+    rect.setOutline(outline)
+    rect.setWidth(width)
+    rect.draw(win)
+    center = rect.getCenter()
+    return center.getX(), center.getY()
+
+
+def draw_button(win, x1, y1, x2, y2, text, color, outline, width=2):
+    x, y = draw_rectangle(win, x1, y1, x2, y2, color, outline, width)
+    draw_text(win, x, y, text, 12, "bold", "white")
 
 
 # função principal da interface gráfica
