@@ -95,6 +95,32 @@ def draw_button(win, x, y, w, h, text, color, outline, width=2):
     draw_text(win, x, y, text, 12, "bold", "white")
 
 
+def draw_entry(win, x, y, w):
+    entry = Entry(Point(x, y), w)
+    entry.draw(win)
+    return entry
+
+
+def draw_row(
+    win,
+    x,
+    y,
+    w,
+    h,
+    values,
+    size=12,
+    style="normal",
+    color="black",
+    bgcolor="white",
+    outline="black",
+    width=1,
+):
+    for i, value in enumerate(values):
+        x1, y1, x2, y2 = x + i * w, y, x + (i + 1) * w, y + h
+        draw_rectangle(win, x1, y1, x2, y2, bgcolor, outline, width)
+        draw_text(win, x + i * w + w / 2, y + h / 2, value, size, style, color)
+
+
 def check_click(win, buttons):
     try:
         click = win.getMouse()
