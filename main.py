@@ -109,8 +109,7 @@ def gerenciar_estoque():
                 win.close()
                 remover_peca()
             case "Exportar Estoque":
-                win.close()
-                exportar_estoque()
+                exportar_estoque(current)
             case "Voltar":
                 win.close()
                 main()
@@ -179,8 +178,7 @@ def realizar_compra():
                 win.close()
                 comprar_peca()
             case "Exportar Estoque":
-                win.close()
-                exportar_estoque()
+                exportar_estoque(current)
             case "Voltar":
                 win.close()
                 main()
@@ -383,6 +381,25 @@ def comprar_peca():
             case "Sair":
                 win.close()
                 break
+
+
+def exportar_estoque(current):
+    matrix = [current[i : i + 5] for i in range(0, len(current), 5)]
+    html = """
+    <h1>Estoque</h1>
+    <html>
+    <head><title>Tabela</title></head>
+    <body>
+    <table border='1'>
+    """
+    for row in matrix:
+        html += "<tr>" + "".join(f"<td>{cell}</td>" for cell in row) + "</tr>"
+    html += "</table></body></html>"
+    reports = os.path.join(os.getcwd(), "reports")
+    os.makedirs(reports, exist_ok=True)
+    temp_file = os.path.join(reports, "estoque_report.html")
+    with open(temp_file, "w", encoding="utf-8") as f:
+        f.write(html)
 
 
 def center_window(win):
