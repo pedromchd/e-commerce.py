@@ -106,9 +106,11 @@ def gerenciar_estoque():
                 win.close()
                 atualizar_peca()
             case "Remover Peça":
-                pass
+                win.close()
+                remover_peca()
             case "Exportar Estoque":
-                pass
+                win.close()
+                exportar_estoque()
             case "Voltar":
                 win.close()
                 main()
@@ -174,9 +176,11 @@ def realizar_compra():
                 entry.setText("")
                 current = update_table(win, estoque, update=True, current=current)
             case "Comprar Peça":
-                pass
+                win.close()
+                comprar_peca()
             case "Exportar Estoque":
-                pass
+                win.close()
+                exportar_estoque()
             case "Voltar":
                 win.close()
                 main()
@@ -293,6 +297,44 @@ def atualizar_peca():
                     if not value:
                         produto[key] = estoque.produtos[id.getText()][key]
                 estoque.atualizar_produto(id.getText(), produto)
+                win.close()
+                gerenciar_estoque()
+            case "Voltar":
+                win.close()
+                gerenciar_estoque()
+            case "Sair":
+                win.close()
+                break
+
+
+def remover_peca():
+    estoque = Estoque(ESTOQUE)
+
+    win = GraphWin("Gerenciar Estoque", WIDTH, HEIGHT)
+    win.setCoords(X1, Y1, X2, Y2)
+    win.setBackground(C_LAVANDA)
+
+    center_window(win)
+
+    draw_text(win, 50, 85, "Remover Peça", 24, "bold", "black")
+
+    botoes = [
+        {"xywh": (70, 7.5, 30, 5), "text": "Remover", "color": C_VERMELHO_ESCURO},
+        {"xywh": (30, 7.5, 30, 5), "text": "Voltar", "color": C_VERMELHO_ESCURO},
+    ]
+
+    for botao in botoes:
+        x, y, w, h = botao["xywh"]
+        draw_button(win, x, y, w, h, botao["text"], botao["color"], C_ROXO_ESCURO)
+
+    draw_text(win, 50, 72.5, "ID", 12, "normal", "black")
+    id = draw_entry(win, 50, 67.5, 20)
+
+    while True:
+        botao_clicado = check_click(win, botoes)
+        match botao_clicado:
+            case "Remover":
+                estoque.remover_produto(id.getText())
                 win.close()
                 gerenciar_estoque()
             case "Voltar":
