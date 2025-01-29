@@ -43,7 +43,8 @@ def main():
         botao_clicado = check_click(win, botoes)
         match botao_clicado:
             case "Gerenciar Estoque":
-                pass
+                win.close()
+                gerenciar_estoque()
             case "Realizar Compras":
                 pass
             case "Sair":
@@ -137,144 +138,84 @@ def check_click(win, buttons):
     return None
 
 
-# função pra verificar o estoque
-def verificar_estoque(estoque: Estoque):
-    win = GraphWin("Verificar Estoque", 600, 600)
-    win.setCoords(0, 0, 50, 50)
-
-    # Centraliza a janela no meio do monitor
-    screen_width = win.winfo_screenwidth()
-    screen_height = win.winfo_screenheight()
-    x = (screen_width // 2) - (600 // 2)
-    y = (screen_height // 2) - (600 // 2)
-    win.master.geometry(f"+{x}+{y}")
-
-    # título da janela
-    titulo = Text(Point(25, 48), "Estoque Atual")
-    titulo.setSize(16)
-    titulo.setStyle("bold")
-    titulo.draw(win)
-
-    # campo de pesquisa
-    pesquisa_label = Text(Point(10, 45), "Pesquisar por Nome:")
-    pesquisa_label.draw(win)
-    pesquisa_entry = Entry(Point(25, 45), 20)
-    pesquisa_entry.draw(win)
-    pesquisar_button = Rectangle(Point(37, 44), Point(42, 46))
-    pesquisar_button.setFill("#4CAF50")
-    pesquisar_button.setOutline("#388E3C")
-    pesquisar_button.setWidth(2)
-    pesquisar_button.draw(win)
-    pesquisar_text = Text(Point(39.5, 45), "🔍 Pesquisar")
-    pesquisar_text.setSize(12)
-    pesquisar_text.setStyle("bold")
-    pesquisar_text.setTextColor("white")
-    pesquisar_text.draw(win)
-
-    resetar_button = Rectangle(Point(43, 44), Point(48, 46))
-    resetar_button.setFill("red")
-    resetar_button.setOutline("darkred")
-    resetar_button.setWidth(2)
-    resetar_button.draw(win)
-    resetar_text = Text(Point(45.5, 45), "Resetar")
-    resetar_text.setSize(12)
-    resetar_text.setStyle("bold")
-    resetar_text.setTextColor("white")
-    resetar_text.draw(win)
-
-    # cabeçalhos da tabela
-    headers = ["ID", "Nome", "Categoria", "Quantidade", "Preço"]
-    for i, header in enumerate(headers):
-        header_text = Text(Point(5 + i * 10, 40), header)
-        header_text.setSize(12)
-        header_text.setStyle("bold")
-        header_text.draw(win)
-
-    # função pra mostrar o estoque na tela
-    def mostrar_estoque(estoque: Estoque, offset=1):
-        filtrado_estoque = estoque.buscar_produtos(pagina=offset)
-        win.setBackground("#c29efb")
+def update_table(win, estoque, pesquisa="", pagina=1, update=False, current=None):
+    if update:
         for item in win.items[:]:
-            if isinstance(item, Text) and item.getText() not in headers:
+            if isinstance(item, Text) and item.getText() in current:
                 item.undraw()
-        for i, produto in enumerate(filtrado_estoque):
-            y_pos = 38 - i * 2
-            if y_pos < 0:
-                break
-            id_text = Text(Point(5, y_pos), produto["ID"])
-            id_text.draw(win)
-            nome_text = Text(Point(15, y_pos), produto["Nome"])
-            nome_text.draw(win)
-            categoria_text = Text(Point(25, y_pos), produto["Categoria"])
-            categoria_text.draw(win)
-            quantidade_text = Text(Point(35, y_pos), produto["Quantidade"])
-            quantidade_text.draw(win)
-            preco_text = Text(Point(45, y_pos), f"R$ {produto['Preco']}")
-            preco_text.draw(win)
+    produtos = estoque.buscar_produtos(nome_produto=pesquisa, pagina=pagina)
+    for i, produto in enumerate(produtos):
+        draw_row(win, 0, 70 - i * 5, 20, 5, produto.values(), update=update)
+    return [value for produto in produtos for value in produto.values()]
 
-            # linha divisória horizontal
-            line = Line(Point(0, y_pos - 1), Point(50, y_pos - 1))
-            line.setFill("lightgrey")
-            line.draw(win)
 
-            # linha divisória vertical
-            for x in range(10, 50, 10):
-                vline = Line(Point(x, y_pos + 1), Point(x, y_pos - 1))
-                vline.setFill("lightgrey")
-                vline.draw(win)
+def gerenciar_estoque():
+    estoque = Estoque(ESTOQUE)
 
-    # mostra o estoque inicial
-    mostrar_estoque(estoque)
+    win = GraphWin("Gerenciar Estoque", WIDTH, HEIGHT)
+    win.setCoords(X1, Y1, X2, Y2)
+    win.setBackground(C_LAVANDA)
 
-    # botão de voltar
-    voltar_button = Rectangle(Point(20, 2), Point(30, 4))
-    voltar_button.setFill("lightblue")
-    voltar_button.draw(win)
-    voltar_text = Text(Point(25, 3), "Voltar")
-    voltar_text.setSize(12)
-    voltar_text.draw(win)
+    center_window(win)
 
-    # botões de rolagem
-    scrobble_up_button = Rectangle(Point(35, 2), Point(40, 4))
-    scrobble_up_button.setFill("lightgrey")
-    scrobble_up_button.draw(win)
-    scrobble_up_text = Text(Point(37.5, 3), "⬆")
-    scrobble_up_text.setSize(12)
-    scrobble_up_text.draw(win)
+    draw_text(win, 20, 90, "Pesquisar por nome:", 12, "normal", "black")
 
-    scrobble_down_button = Rectangle(Point(45, 2), Point(50, 4))
-    scrobble_down_button.setFill("lightgrey")
-    scrobble_down_button.draw(win)
-    scrobble_down_text = Text(Point(47.5, 3), "⬇")
-    scrobble_down_text.setSize(12)
-    scrobble_down_text.draw(win)
+    botoes = [
+        {"xywh": (75, 90, 16, 5), "text": "Pesquisar", "color": C_VERDE},
+        {"xywh": (90, 90, 12.5, 5), "text": "Resetar", "color": C_VERMELHO},
+        {"xywh": (50, 12.5, 30, 5), "text": "Cadastrar Peça", "color": C_ROXO_ESCURO},
+        {"xywh": (50, 5, 30, 5), "text": "Exportar Estoque", "color": C_VERDE_ESCURO},
+        {"xywh": (10, 20, 16, 5), "text": "Voltar", "color": C_VERMELHO_ESCURO},
+        {"xywh": (85, 20, 5, 5), "text": "↑", "color": C_ROXO},
+        {"xywh": (95, 20, 5, 5), "text": "↓", "color": C_ROXO},
+    ]
 
-    offset = 1
+    for botao in botoes:
+        x, y, w, h = botao["xywh"]
+        draw_button(win, x, y, w, h, botao["text"], botao["color"], C_ROXO_ESCURO)
 
-    # loop pra detectar cliques nos botões
+    entry = draw_entry(win, 50, 90, 20)
+
+    headers = ["ID", "Nome", "Categoria", "Quantidade", "Preço"]
+    draw_row(win, 0, 75, 20, 5, headers, style="bold")
+    current = update_table(win, estoque)
+
+    pagina = 1
+
     while True:
-        click = win.getMouse()
-        if 20 <= click.getX() <= 30 and 2 <= click.getY() <= 4:
-            win.close()
-            interface_principal()
-            break
-        elif 37 <= click.getX() <= 42 and 44 <= click.getY() <= 46:
-            pesquisa = pesquisa_entry.getText().lower()
-            filtrado_estoque = [
-                produto for produto in estoque if pesquisa in produto["Nome"].lower()
-            ]
-            mostrar_estoque(filtrado_estoque)
-        elif 43 <= click.getX() <= 48 and 44 <= click.getY() <= 46:
-            pesquisa_entry.setText("")
-            mostrar_estoque(estoque)
-        elif 35 <= click.getX() <= 40 and 2 <= click.getY() <= 4:
-            if offset > 1:
-                offset -= 1
-                mostrar_estoque(estoque, offset)
-        elif 45 <= click.getX() <= 50 and 2 <= click.getY() <= 4:
-            if offset * 10 < len(estoque.produtos):
-                offset += 1
-                mostrar_estoque(estoque, offset)
+        botao_clicado = check_click(win, botoes)
+        match botao_clicado:
+            case "Pesquisar":
+                pesquisa = entry.getText().lower()
+                current = update_table(
+                    win, estoque, pesquisa, update=True, current=current
+                )
+            case "Resetar":
+                entry.setText("")
+                current = update_table(win, estoque, update=True, current=current)
+            case "Cadastrar Peça":
+                win.close()
+                cadastrar_peca(estoque)
+            case "Exportar Estoque":
+                pass
+            case "Voltar":
+                win.close()
+                main()
+            case "↑":
+                if pagina > 1:
+                    pagina -= 1
+                    current = update_table(
+                        win, estoque, pagina=pagina, update=True, current=current
+                    )
+            case "↓":
+                if pagina * 10 < len(estoque.produtos):
+                    pagina += 1
+                    current = update_table(
+                        win, estoque, pagina=pagina, update=True, current=current
+                    )
+            case "Sair":
+                win.close()
+                break
 
 
 # função pra cadastrar uma nova peça
