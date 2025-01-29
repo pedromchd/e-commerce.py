@@ -26,6 +26,18 @@ def main():
 
     draw_text(win, 50, 75, "Auto-commerce", 24, "bold", "white")
 
+    botoes = [
+        {"xywh": (50, 50, 30, 7), "text": "Verificar Estoque"},
+        {"xywh": (50, 40, 30, 7), "text": "Cadastrar Peça"},
+        {"xywh": (50, 30, 30, 7), "text": "Gerar Lista"},
+        {"xywh": (50, 20, 30, 7), "text": "Realizar Compra"},
+        {"xywh": (50, 10, 30, 7), "text": "Sair"},
+    ]
+
+    for botao in botoes:
+        x, y, w, h = botao["xywh"]
+        draw_button(win, x, y, w, h, botao["text"], C_ROXO, C_ROXO_ESCURO)
+
     win.getMouse()
 
     win.close()
@@ -64,12 +76,11 @@ def draw_rectangle(win, x1, y1, x2, y2, color, outline, width=2):
     rect.setOutline(outline)
     rect.setWidth(width)
     rect.draw(win)
-    center = rect.getCenter()
-    return center.getX(), center.getY()
 
 
-def draw_button(win, x1, y1, x2, y2, text, color, outline, width=2):
-    x, y = draw_rectangle(win, x1, y1, x2, y2, color, outline, width)
+def draw_button(win, x, y, w, h, text, color, outline, width=2):
+    x1, y1, x2, y2 = x - w / 2, y - h / 2, x + w / 2, y + h / 2
+    draw_rectangle(win, x1, y1, x2, y2, color, outline, width)
     draw_text(win, x, y, text, 12, "bold", "white")
 
 
