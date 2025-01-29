@@ -11,9 +11,9 @@ C_ROXO = "#521580"  # Roxo
 C_ROXO_ESCURO = "#20062a"  # Roxo escuro
 C_VERMELHO = "#df0c40"  # Vermelho
 C_VERMELHO_ESCURO = "#9c8dfb"  # Vermelho escuro
-C_LAVANDA = "#c29efb"  # Lavanda
 C_VERDE = "#4CAF50"  # Verde
 C_VERDE_ESCURO = "#388E3C"  # Verde escuro
+C_LAVANDA = "#c29efb"  # Lavanda
 
 ESTOQUE = os.path.join(os.getcwd(), "data", "estoque.csv")
 
