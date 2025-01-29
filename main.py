@@ -101,7 +101,7 @@ def gerenciar_estoque():
                 current = update_table(win, estoque, update=True, current=current)
             case "Cadastrar Peça":
                 win.close()
-                cadastrar_peca(estoque)
+                cadastrar_peca()
             case "Atualizar Peça":
                 pass
             case "Remover Peça":
@@ -196,6 +196,56 @@ def realizar_compra():
                 break
 
 
+def cadastrar_peca():
+    estoque = Estoque(ESTOQUE)
+
+    win = GraphWin("Gerenciar Estoque", WIDTH, HEIGHT)
+    win.setCoords(X1, Y1, X2, Y2)
+    win.setBackground(C_LAVANDA)
+
+    center_window(win)
+
+    draw_text(win, 50, 85, "Cadastrar Peça", 24, "bold", "black")
+
+    botoes = [
+        {"xywh": (50, 17.5, 30, 5), "text": "Cadastrar", "color": C_VERDE_ESCURO},
+        {"xywh": (50, 10, 30, 5), "text": "Voltar", "color": C_VERMELHO_ESCURO},
+    ]
+
+    for botao in botoes:
+        x, y, w, h = botao["xywh"]
+        draw_button(win, x, y, w, h, botao["text"], botao["color"], C_ROXO_ESCURO)
+
+    draw_text(win, 50, 72.5, "Nome", 12, "normal", "black")
+    nome = draw_entry(win, 50, 67.5, 20)
+    draw_text(win, 50, 60, "Categoria", 12, "normal", "black")
+    categoria = draw_entry(win, 50, 55, 20)
+    draw_text(win, 50, 47.5, "Quantidade", 12, "normal", "black")
+    quantidade = draw_entry(win, 50, 42.5, 20)
+    draw_text(win, 50, 35, "Preço", 12, "normal", "black")
+    preco = draw_entry(win, 50, 30, 20)
+
+    while True:
+        botao_clicado = check_click(win, botoes)
+        match botao_clicado:
+            case "Cadastrar":
+                produto = {
+                    "Nome": nome.getText(),
+                    "Categoria": categoria.getText(),
+                    "Quantidade": quantidade.getText(),
+                    "Preco": preco.getText(),
+                }
+                estoque.adicionar_produto(produto)
+                win.close()
+                gerenciar_estoque()
+            case "Voltar":
+                win.close()
+                gerenciar_estoque()
+            case "Sair":
+                win.close()
+                break
+
+
 def center_window(win):
     screen_width = win.winfo_screenwidth()
     screen_height = win.winfo_screenheight()
@@ -285,96 +335,6 @@ def update_table(win, estoque, pesquisa="", pagina=1, update=False, current=None
     for i, produto in enumerate(produtos):
         draw_row(win, 0, 70 - i * 5, 20, 5, produto.values(), update=update)
     return [value for produto in produtos for value in produto.values()]
-
-
-# função pra cadastrar uma nova peça
-def cadastrar_peca(estoque: Estoque):
-    win = GraphWin("Cadastrar Peça", 600, 600)
-    win.setCoords(0, 0, 50, 50)
-    win.setBackground("#c29efb")
-    # Centraliza a janela no meio do monitor
-    screen_width = win.winfo_screenwidth()
-    screen_height = win.winfo_screenheight()
-    x = (screen_width // 2) - (600 // 2)
-    y = (screen_height // 2) - (600 // 2)
-    win.master.geometry(f"+{x}+{y}")
-
-    # título da janela
-    titulo = Text(Point(25, 48), "Cadastrar Nova Peça")
-    titulo.setSize(16)
-    titulo.setStyle("bold")
-    titulo.draw(win)
-
-    nome_label = Text(
-        Point(10, 36), "Nome:"
-    )  # campo de entrada do nome a diferenaça é que o nome é um texto
-    nome_label.draw(win)
-    nome_entry = Entry(Point(25, 36), 20)  # campo de entrada do nome
-    nome_entry.draw(win)
-
-    categoria_label = Text(Point(10, 32), "Categoria:")
-    categoria_label.draw(win)
-    categoria_entry = Entry(Point(25, 32), 20)
-    categoria_entry.draw(win)
-
-    quantidade_label = Text(Point(10, 28), "Quantidade:")
-    quantidade_label.draw(win)
-    quantidade_entry = Entry(Point(25, 28), 20)
-    quantidade_entry.draw(win)
-
-    preco_label = Text(Point(10, 24), "Preço:")
-    preco_label.draw(win)
-    preco_entry = Entry(Point(25, 24), 20)
-    preco_entry.draw(win)
-
-    # botão de cadastrar
-    cadastrar_button = Rectangle(Point(15, 18), Point(35, 20))
-    cadastrar_button.setFill("lightgreen")
-    cadastrar_button.draw(win)
-    cadastrar_text = Text(Point(25, 19), "Cadastrar")
-    cadastrar_text.setSize(12)
-    cadastrar_text.draw(win)
-
-    # botão de voltar
-    voltar_button = Rectangle(Point(20, 2), Point(30, 4))
-    voltar_button.setFill("lightblue")
-    voltar_button.draw(win)
-    voltar_text = Text(Point(25, 3), "Voltar")
-    voltar_text.setSize(12)
-    voltar_text.draw(win)
-
-    # loop pra detectar cliques nos botões o loop aqui alem de detectar cliques serve pra salvar os dados no estoque
-    while True:
-        click = win.getMouse()
-        if (
-            15 <= click.getX() <= 35 and 18 <= click.getY() <= 20
-        ):  # verifica se o clique foi no botão de cadastrar
-            nome = nome_entry.getText()
-            categoria = categoria_entry.getText()
-            quantidade = quantidade_entry.getText()
-            preco = preco_entry.getText()
-
-            if (
-                nome and categoria and quantidade and preco
-            ):  # verifica se todos os campos foram preenchidos
-                produto = {
-                    "Nome": nome,
-                    "Categoria": categoria,
-                    "Quantidade": quantidade,
-                    "Preco": preco,
-                }
-                estoque.adicionar_produto(produto)
-                break
-
-        if (
-            20 <= click.getX() <= 30 and 2 <= click.getY() <= 4
-        ):  # verifica se o clique foi no botão de voltar
-            win.close()
-            interface_principal()
-            break
-
-    win.close()
-    interface_principal()
 
 
 # # função pra gerar a lista de estoque
