@@ -1,13 +1,38 @@
-# import csv
 import os
-
-# import webbrowser
 
 from lib.estoque import Estoque
 from lib.graphics import *
 
-# nome do arquivo csv que guarda o estoque, eh onde a gente salva tudo
-CSV_FILE = os.path.join(os.getcwd(), "data", "estoque.csv")
+WIDTH, HEIGHT = 640, 480
+
+X1, Y1, X2, Y2 = 0, 0, 100, 100
+
+ESTOQUE = os.path.join(os.getcwd(), "data", "estoque.csv")
+
+
+def main():
+    win = GraphWin("Auto-commerce: Peças de Carro e Artigos Esportivos", WIDTH, HEIGHT)
+    center_window(win)
+
+    win.setCoords(X1, Y1, X2, Y2)
+
+    win.getMouse()
+
+    win.close()
+
+
+# Função para centralizar a janela
+def center_window(win):
+    # Obtém as dimensões da tela
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+
+    # Calcula a posição x e y para centralizar a janela
+    x = (screen_width // 2) - (WIDTH // 2)
+    y = (screen_height // 2) - (HEIGHT // 2)
+
+    # Define a geometria da janela
+    win.master.geometry(f"{WIDTH}x{HEIGHT}+{x}+{y}")
 
 
 # função principal da interface gráfica
